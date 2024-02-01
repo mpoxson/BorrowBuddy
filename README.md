@@ -18,11 +18,13 @@ I have create two simple tables "products" and "users" in backend. The goal is t
 
 ## Usage
 - install MySQL Workbench `https://www.youtube.com/watch?v=u96rVINbAUI`
-- cd server
+- cd ../BorrowBuddy/server
 - npm init
+- npm install express cors mysql2 
+- npm install nodemon 
 - running `npm start`. 
 
-Once the server is running, you can interact with the API endpoints to manage users and products.(because frontend doesn't create, we can use insomnia to test whether they can be connected to the frontend in the future )
+Once the server is running, you can interact with the API endpoints to manage users and products.(because frontend doesn't create, we can use `insomnia` or `postman` to test whether they can be connected to the frontend in the future)
 
 
 ## API Endpoints
