@@ -19,6 +19,9 @@ Postman
 - "database": "borrowbuddy" (change windows service name)
 - all other options stay the same, execute
 - download workbench
+- connect to the server using the name borrowbuddy and the password above
+- create a new schema called "borrowbuddy"
+- see below for the rest
 
 ### --------------------------------v1--------------------------
 
