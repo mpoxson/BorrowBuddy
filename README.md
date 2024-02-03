@@ -12,6 +12,7 @@ Prettier
 Postman
 
 ## Install MySQL Workbench:
+
 - download MySql from website
 - Typical install
 - run configurator
@@ -48,3 +49,7 @@ Once the server is running, you can interact with the API endpoints to manage us
 - POST /api/products: Add a new product to the database.
 
 ### Client/frontend (React.js)
+
+- cd ../BorrowBuddy/client
+- npm install react
+- npm start
