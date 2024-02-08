@@ -62,7 +62,7 @@ Once the server is running, you can interact with the API endpoints to manage us
 - npm install react-router-dom formik yup axios
 - npm install react-router-dom
 
-We will use `cors` middleware to handle cross-domain(port 3000 from frontend and port3001 from backend) requests. you may need `cd ../BorrowBuddy/client` then `npm install cors` (if you did it before or no any error, ignore it)
+We will use `cors` middleware to handle cross-domain(port 3000 from frontend and port3001 from backend) requests. you may need `cd ../BorrowBuddy/server` then `npm install cors` (if you did it before or no any error, ignore it)
 
 - make sure you `npm start` in client
 - make sure you `npm start` in server
