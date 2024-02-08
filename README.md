@@ -64,9 +64,9 @@ Once the server is running, you can interact with the API endpoints to manage us
 
 We will use `cors` middleware to handle cross-domain(port 3000 from frontend and port3001 from backend) requests. you may need `cd ../BorrowBuddy/client` then `npm install cors` (if you did it before or no any error, ignore it)
 
-make sure you `npm start` in client
-make sure you `npm start` in server
-Both need to be run together, see `...BorrowBuddy\client\src\image\terminal.PNG`
+- make sure you `npm start` in client
+- make sure you `npm start` in server
+- Both need to be run together, see `...BorrowBuddy\client\src\image\terminal.PNG`
 
 When Both of them successfull run,
 you can go these four page in frontend
