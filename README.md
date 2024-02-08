@@ -12,10 +12,11 @@ Prettier
 Postman
 
 ## Install MySQL Workbench:
+
 - download MySql from website
 - Typical install
 - run configurator
-- "password": "xiachen123",
+- "password": "xiachen123", (password from your local sql workbench)
 - "database": "borrowbuddy" (change windows service name)
 - all other options stay the same, execute
 - download workbench
@@ -32,7 +33,7 @@ I have create two simple tables "products" and "users" in backend. The goal is t
 ## Usage
 
 - install MySQL Workbench `https://www.youtube.com/watch?v=u96rVINbAUI`
-- cd ../BorrowBuddy/server
+- cd `../BorrowBuddy/server`
 - npm init
 - npm install express cors mysql2
 - npm install nodemon
@@ -54,3 +55,23 @@ Once the server is running, you can interact with the API endpoints to manage us
 - POST /api/ratings: Add a new rating to the database.
 
 ### Client/frontend (React.js)
+
+cd `../BorrowBuddy/client`
+npm install react-scripts
+npm install react-router-dom formik yup axios
+npm install react-router-dom
+
+We will use `cors` middleware to handle cross-domain(port 3000 from frontend and port3001 from backend) requests. you may need `cd ../BorrowBuddy/client` then `npm install cors` (if you did it before or no any error, ignore it)
+
+make sure you `npm start` in client
+make sure you `npm start` in server
+Both need to be run together, see `...BorrowBuddy\client\src\image\terminal.PNG`
+
+When Both of them successfull run,
+you can go these four page in frontend
+- `http://localhost:3000/UsersList` (This page is for testing, you can see the data directly and may be deleted in the future)
+- `http://localhost:3000/login`
+- `http://localhost:3000/register`
+- `http://localhost:3000/home`
+
+please add more page in `../BorrowBuddy/client/src/components/...` 
