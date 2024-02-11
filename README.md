@@ -56,6 +56,11 @@ Once the server is running, you can interact with the API endpoints to manage us
 
 ### Client/frontend (React.js)
 
+
+- cd ../BorrowBuddy/client
+- npm install react
+- npm start
+
 ## Usage
 - cd `../BorrowBuddy/client`
 - npm install react-scripts
@@ -76,3 +81,4 @@ you can go these four page in frontend
 - `http://localhost:3000/home`
 
 please add more page in `../BorrowBuddy/client/src/components/...` 
+
