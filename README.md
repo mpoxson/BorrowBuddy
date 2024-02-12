@@ -61,6 +61,10 @@ Once the server is running, you can interact with the API endpoints to manage us
 - npm install react
 - npm start
 
+# Material UI:
+- cd ../BorrowBuddy/client
+- npm install @mui/material @emotion/react @emotion/styled
+
 ## Usage
 - cd `../BorrowBuddy/client`
 - npm install react-scripts
