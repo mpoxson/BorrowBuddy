@@ -1,8 +1,8 @@
-// import React, { useState } from 'react';
-// import { Formik, Form, Field, ErrorMessage } from 'formik';
-// import * as Yup from 'yup';
-// import axios from 'axios';
-// import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 // import '../css/LoginStyles.css';
 
 // const Login = () => {
@@ -96,20 +96,18 @@
 
 // export default Login;
 
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+import Link  from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function Copyright(props) {
   return (
@@ -120,8 +118,8 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="#">
+        BorrowBuddy
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -131,17 +129,66 @@ function Copyright(props) {
 
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+
+  const validationSchema = Yup.object().shape({
+    user_email: Yup.string()
+      .email('Invalid email address')
+      .required('Email is required'),
+    user_password: Yup.string()
+      .required('Password is required')
+      .min(6, 'Password must be at least 6 characters'),
+  });
+
+  const authenticateUser = async (email, password) => {
+    try {
+      const response = await axios.get('http://localhost:3001/users');
+      const users = response.data;
+      const user = users.find(user => user.user_email === email);
+      console.log(users);
+      if (user) {
+        if (user.user_password === password) {
+          return user;
+        } else {
+          throw new Error('Invalid email or password');
+        }
+      } else {
+        throw new Error('User not found');
+      }
+    } catch (error) {
+      console.error('Authentication failed:', error.message);
+      return null;
+    }
+  };
+
+  const handleSubmit = async (event) => {
+
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get("email"),
       password: data.get("password"),
     });
+    try {
+      const user = await authenticateUser(data.get("email"), data.get("password"));
+      console.log('Login successful:', user);
+      if (user) {
+        navigate('/home');
+      } else {
+        setError('Invalid email or password');
+      }
+    } catch (error) {
+      console.error('Login failed:', error.message);
+      setError(error.message);
+    }
+
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -163,6 +210,7 @@ export default function SignIn() {
             onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
+            
           >
             <TextField
               margin="normal"
@@ -173,6 +221,7 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              validationSchema={validationSchema}
             />
             <TextField
               margin="normal"
@@ -212,6 +261,6 @@ export default function SignIn() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-    </ThemeProvider>
+    
   );
 }
