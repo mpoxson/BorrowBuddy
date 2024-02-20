@@ -96,6 +96,10 @@ import { useNavigate } from 'react-router-dom';
 
 // export default Login;
 
+//To do
+//Visual Response for failure to sign in
+//Make sure sign in works
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -108,6 +112,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { COLORS as c,  PAGE_ROUTES } from "../constants/enums";
 
 function Copyright(props) {
   return (
@@ -128,7 +133,7 @@ function Copyright(props) {
 }
 
 
-export default function SignIn() {
+export default function Login() {
 
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -176,7 +181,7 @@ export default function SignIn() {
       const user = await authenticateUser(data.get("email"), data.get("password"));
       console.log('Login successful:', user);
       if (user) {
-        navigate('/home');
+        navigate(PAGE_ROUTES.HOME);
       } else {
         setError('Invalid email or password');
       }
@@ -199,7 +204,7 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: c.PRIMARY, color:c.ACCENT }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -252,7 +257,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href={PAGE_ROUTES.REGISTER} variant="body2" color={c.ACCENT}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
