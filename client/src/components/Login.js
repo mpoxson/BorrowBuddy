@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
@@ -37,15 +36,6 @@ function Copyright(props) {
 export default function Login() {
   const [errorM, setError] = useState("");
   const navigate = useNavigate();
-
-  const validationSchema = Yup.object().shape({
-    user_email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    user_password: Yup.string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters"),
-  });
 
   const authenticateUser = async (email, password) => {
     try {
@@ -118,7 +108,7 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
-            error={errorM == "" ? false : true}
+            error={errorM === "" ? false : true}
           />
           <TextField
             margin="normal"
@@ -129,8 +119,8 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            error={errorM == "" ? false : true}
-            helperText={errorM == "" ? "" : "Invalid username or password"}
+            error={errorM === "" ? false : true}
+            helperText={errorM === "" ? "" : "Invalid username or password"}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
