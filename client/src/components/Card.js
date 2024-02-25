@@ -10,6 +10,7 @@ import Avatar from "@mui/material/Avatar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
+import { object } from "yup";
 
 function Card(props) {
   const [saved, setSaved] = useState(false);
@@ -18,6 +19,11 @@ function Card(props) {
     if (saved === null || saved === false) setSaved(true);
     if (saved === true) setSaved(false);
   };
+
+  let start = "" + props.props.product_available_start_time;
+  let end = "" + props.props.product_available_end_time;
+  start = start.slice(0, 10);
+  end = end.slice(0, 10);
 
   return (
     <Paper
@@ -77,18 +83,18 @@ function Card(props) {
           />
           <CardContent sx={{ color: COLORS.PRIMARY }}>
             <Typography gutterBottom variant="h5" component="div">
-              Lizard • $5.99/day
+              {props.props.product_name} • ${props.props.product_price}/day
             </Typography>
             <Typography variant="body2" sx={{ color: COLORS.PRIMARY }}>
-              Lizards are a widespread group of squamate reptiles, with over
-              6,000 species, ranging across all continents except Antarctica
+              {props.props.product_description}
             </Typography>
             <Typography
               variant="caption"
               sx={{ color: COLORS.PRIMARY, marginRight: "20px" }}
             >
-              Available: 1/17/26- 1/23/45
+              Available: {start} - {end}
             </Typography>
+            <Typography></Typography>
             <Typography variant="caption" sx={{ color: COLORS.PRIMARY }}>
               Location: Detroit
             </Typography>
