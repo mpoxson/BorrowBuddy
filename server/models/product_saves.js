@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'product_id'
             }
         },
-        timestamps: {
+        save_time: {
             type: DataTypes.DATE,
             allowNull: false
         },
@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, 
     {
+        timestamps: false,
         createdAt: false,
         updatedAt: false,
     });
