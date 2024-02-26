@@ -48,11 +48,16 @@ Once the server is running, you can interact with the API endpoints to manage us
 - GET /api/product_rentals: Retrieve a list of all product rentals.
 - GET /api/comments: Retrieve a list of all comments.
 - GET /api/ratings: Retrieve a list of all ratings.
+- GET /api/product_saves: Retrieve a saved list of all products.
+- GET /api/product_images: Retrieve a list of all product images.
+- 
 - POST /api/users: Add a new user to the database.
 - POST /api/products: Add a new product to the database.
 - POST /api/product_rentals: Add a new product rental to the database.
 - POST /api/comments: Add a new comment to the database.
 - POST /api/ratings: Add a new rating to the database.
+- POST /api/product_saves: Add a new saved list of all products to the database.
+- POST /api/product_images: Add a new product images to the database.
 
 ### Client/frontend (React.js)
 
