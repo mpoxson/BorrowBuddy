@@ -22,6 +22,9 @@ app.use("/ratings", ratingsRouter);
 const product_rentalsRouter = require("./routes/product_rentals");
 app.use("/product_rentals", product_rentalsRouter);
 
+const product_savesRouter = require("./routes/product_saves");
+app.use("/product_saves", product_savesRouter);
+
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("Server running on port 3001");
