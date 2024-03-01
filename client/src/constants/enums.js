@@ -1,8 +1,8 @@
 export const PAGE_ROUTES = {
   HOME: "/",
   REGISTER: "/register",
-  USERS: "/login",
-  LOGIN: "/UsersList",
+  LOGIN: "/login",
+  USERS: "/UsersList",
 };
 
 export const PAGE_NAMES = [

@@ -33,7 +33,7 @@ function Copyright(props) {
   );
 }
 
-export default function Login() {
+export default function Login(props) {
   const [errorM, setError] = useState("");
   const navigate = useNavigate();
 
@@ -73,6 +73,7 @@ export default function Login() {
       );
       if (user) {
         console.log("Login successful:", user);
+        props.onLogin();
         navigate(PAGE_ROUTES.HOME);
       }
     } catch (error) {

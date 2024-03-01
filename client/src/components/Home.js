@@ -16,7 +16,7 @@ const Home = () => {
   return (
     <div>
       {product.map((value) => (
-        <Card props={value} />
+        <Card key={value.product_id} props={value} />//add unique key to avoid inspect warning
       ))}
     </div>
   );
