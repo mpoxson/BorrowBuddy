@@ -29,8 +29,12 @@ const Register = () => {
       await axios.post('http://localhost:3001/users', values);
       navigate('/login'); // Redirect to login page after successful registration
     } catch (error) {
-      console.error('Registration failed:', error.message);
-      setError(error.message);
+      if (error.response.status === 409) {
+        setError('Email address is already registered');
+      } else {
+        console.error('Registration failed:', error.message);
+        setError('An error occurred during registration');
+      }
     }
     setSubmitting(false);
   };
