@@ -14,7 +14,7 @@ import { PAGE_NAMES, PAGE_ROUTES } from "../constants/enums";
 
 const settings = PAGE_NAMES;
 
-function Navbar() {
+function Navbar({ onLogout }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -23,6 +23,11 @@ function Navbar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    handleCloseUserMenu(); // Close the user menu
+    onLogout(); // Trigger the logout function passed from the parent component
   };
 
   return (
@@ -105,6 +110,17 @@ function Navbar() {
                   </Typography>
                 </MenuItem>
               ))}
+              <MenuItem onClick={handleLogout}>
+                <Typography
+                  textAlign="center"
+                  color="primary"
+                  sx={{
+                    textDecoration: "none",
+                  }}
+                >
+                  Logout
+                </Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
