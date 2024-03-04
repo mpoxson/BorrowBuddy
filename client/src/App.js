@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
+import Feedback from "./components/Feedback";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -101,6 +102,7 @@ export default function App() {
                   <Route path="/home" element={<Home />} />
                   <Route path="/usersList" element={<TestUsersList />} />
                   <Route path="/" element={<Home />} />
+                  <Route path="/Feedback" element={<Feedback />} />
                 </Route>
               </Routes>
             </header>
