@@ -1,5 +1,6 @@
+
 import React from "react";
 
-export default function Feedback() {
-  return <div>Feedback</div>;
+export default function Feedback(props) {
+  return <>Feedback</>;
 }

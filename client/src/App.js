@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { COLORS as c } from "./constants/enums";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useParams,
+} from "react-router-dom";
 import TestUsersList from "./components/TestUsersList";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -17,6 +22,7 @@ import Link from "@mui/material/Link";
 import { COLORS } from "./constants/enums";
 import { PAGE_NAMES } from "./constants/enums";
 import Grid from "@mui/material/Unstable_Grid2";
+import Product from "./components/Product";
 
 const theme = createTheme({
   palette: {
@@ -103,6 +109,7 @@ export default function App() {
                   <Route path="/usersList" element={<TestUsersList />} />
                   <Route path="/" element={<Home />} />
                   <Route path="/Feedback" element={<Feedback />} />
+                  <Route path="/Product/:productId" element={<Product />} />
                 </Route>
               </Routes>
             </header>
