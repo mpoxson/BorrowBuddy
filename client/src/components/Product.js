@@ -1,10 +1,11 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import { COLORS } from "../constants/enums";
 import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Unstable_Grid2";
 import Paper from "@mui/material/Paper";
+import Textarea from "@mui/joy/Textarea";
 
 const Product = (props) => {
   let { productId } = useParams();
@@ -36,33 +37,41 @@ const Product = (props) => {
               </Avatar>
             </Box>
             <Box>
-              {/* Username */}
+              <Typography>User Name</Typography>
               <Box>
-                {/* City */}
-                {/* Rating */}
+                <Typography>City</Typography>
+                <Typography>Rating</Typography>
               </Box>
             </Box>
           </Box>
           {/* Product meta info */}
           <Container>
-            <Box>{/* Product name */}</Box>
             <Box>
-              <Box>{/* price */}</Box>
-              <Box>{/* # times rented */}</Box>
+              <Typography>Product name</Typography>
+            </Box>
+            <Box>
+              <Box>
+                <Typography>Price</Typography>
+              </Box>
+              <Box>
+                <Typography># times rented</Typography>
+              </Box>
             </Box>
           </Container>
-          <Box>{/* ADD EDIT BUTTON */}</Box>
+          <Box>
+            <Button>Edit</Button>
+          </Box>
         </Container>
         <Box>
           <Box>
-            <Typography>{/* description from props */}</Typography>
+            <Typography>kdjfajgfsidgfsakdlfgasdlfia;dg rf;wigf</Typography>
           </Box>
           <Box>
-            {/* category */}
-            {/* START/END */}
+            <Typography>Category</Typography>
+            <Typography>Start/End</Typography>
           </Box>
         </Box>
-        {/* Reserve Button */}
+        <Button>Reserve</Button>
       </Box>
       {/* Box for comments */}
       <Box>
@@ -73,20 +82,24 @@ const Product = (props) => {
             <Grid container wrap="nowrap" spacing={2}>
               <Grid item>
                 {/* <Avatar alt="Remy Sharp" src={imgLink} /> */}
+                <Avatar
+                  sx={{ bgcolor: COLORS.ACCENT }}
+                  aria-label="Profile Pic"
+                >
+                  T
+                </Avatar>
               </Grid>
               <Grid justifyContent="left" item xs zeroMinWidth>
-                <h4 style={{ margin: 0, textAlign: "left" }}>
-                  {/* User name */}
-                </h4>
-                <p style={{ textAlign: "left" }}>{/* Comment */}</p>
-                {/* Date posted */}
+                <h4 style={{ margin: 0, textAlign: "left" }}>username</h4>
+                <p style={{ textAlign: "left" }}>Comment</p>
+                <Typography>Date commented</Typography>
               </Grid>
             </Grid>
           </Paper>
         </Box>
         <Box>
-          {/* Text area */}
-          {/* Comment button */}
+          <Textarea />
+          <Button>Submit</Button>
         </Box>
       </Box>
     </Container>
