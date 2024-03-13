@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { COLORS as c } from "./constants/enums";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TestUsersList from "./components/TestUsersList";
 import Login from "./components/Login";
 import Register from "./components/Register";

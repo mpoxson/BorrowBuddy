@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
-import { Box, CardHeader, Card as MCard, Tooltip } from "@mui/material";
+import { CardHeader, Card as MCard, Tooltip } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Button, CardActionArea, CardActions } from "@mui/material";
+import { CardActionArea } from "@mui/material";
 import { COLORS } from "../constants/enums";
 import Avatar from "@mui/material/Avatar";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
-import { object } from "yup";
 
 function Card(props) {
   const [saved, setSaved] = useState(false);

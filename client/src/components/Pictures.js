@@ -16,7 +16,7 @@ const Pictures = ({ props }) => {
     >
       {props.map((image) => (
         <SwiperSlide>
-          <img src={image} style={{ width: "100%" }} />
+          <img src={image} alt="Test img" style={{ width: "100%" }} />
         </SwiperSlide>
       ))}
     </Swiper>
