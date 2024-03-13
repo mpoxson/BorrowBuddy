@@ -167,7 +167,12 @@ const Product = () => {
       {/* Box for comments */}
       {/* Put all this in a map for each comment of a certain product */}
       <Paper sx={{ marginTop: "10px" }} elevation={3}>
-        <Typography variant="h5">Comments</Typography>
+        <Typography
+          variant="h5"
+          sx={{ paddingTop: "5px", marginBottom: "-5px" }}
+        >
+          Comments
+        </Typography>
         <Divider />
         <Box width={"98%"} display="flex" justifyContent="center">
           <Comments />

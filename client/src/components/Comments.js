@@ -21,6 +21,8 @@ styleLink.href =
   "https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.css";
 document.head.appendChild(styleLink);
 
+function handleComment() {}
+
 function Comments() {
   return (
     <div
@@ -80,10 +82,11 @@ function Comments() {
         <Form reply>
           <FormTextArea />
           <Button
-            content="Add Reply"
+            content="Comment"
             labelPosition="left"
             icon="edit"
             primary
+            onClick={handleComment}
           />
         </Form>
       </div>

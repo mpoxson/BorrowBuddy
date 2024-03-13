@@ -11,13 +11,8 @@ import Feedback from "./components/Feedback";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
-import { COLORS } from "./constants/enums";
-import { PAGE_NAMES } from "./constants/enums";
-import Grid from "@mui/material/Unstable_Grid2";
 import Product from "./components/Product";
+import Footers from "./components/Footer";
 
 const theme = createTheme({
   palette: {
@@ -33,24 +28,9 @@ const theme = createTheme({
   },
 });
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary">
-      {"Copyright © "}
-      <Link color="inherit" href="http://localhost:3000/">
-        BorrowBuddy
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const redirectTo = null; //NOTE: INITIALIZE SHOULD BE NULL
-
-  const settings = PAGE_NAMES;
 
   useEffect(() => {
     // Check if user is already authenticated in localStorage
@@ -110,36 +90,8 @@ export default function App() {
             </header>
           </Router>
           <CssBaseline />
-          <Box
-            component="footer"
-            sx={{
-              py: 3,
-              px: 2,
-              mt: "auto",
-              backgroundColor: COLORS.SECONDARY,
-            }}
-          >
-            <Container maxWidth="sm">
-              <Grid container spacing={1} sx={{ marginBottom: "10px" }}>
-                {settings.map((setting) => (
-                  <Grid xs>
-                    <Typography
-                      component="a"
-                      href={setting.ROUTE}
-                      textAlign="center"
-                      color="primary"
-                      sx={{
-                        textDecoration: "none",
-                      }}
-                    >
-                      {setting.NAME}
-                    </Typography>
-                  </Grid>
-                ))}
-              </Grid>
-              <Copyright />
-            </Container>
-          </Box>
+
+          <Footers />
         </Box>
       </ThemeProvider>
     </div>
