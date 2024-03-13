@@ -5,29 +5,10 @@ import { COLORS } from "../constants/enums";
 import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Unstable_Grid2";
 import Paper from "@mui/material/Paper";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import Pictures from "./Pictures";
-import {
-  CommentText,
-  CommentMetadata,
-  CommentGroup,
-  CommentContent,
-  CommentAvatar,
-  CommentAuthor,
-  FormTextArea,
-  CommentAction,
-  CommentActions,
-  Comment,
-  Form,
-  Header,
-} from "semantic-ui-react";
+import Comments from "./Comments";
 import img from "../image/test.jpg";
-
-const styleLink = document.createElement("link");
-styleLink.rel = "stylesheet";
-styleLink.href =
-  "https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.css";
-document.head.appendChild(styleLink);
+import { Divider } from "semantic-ui-react";
 
 const Product = () => {
   let { productId } = useParams();
@@ -185,83 +166,12 @@ const Product = () => {
 
       {/* Box for comments */}
       {/* Put all this in a map for each comment of a certain product */}
-      <Paper sx={{ marginTop: "10px" }}>
-        <CommentGroup size="small">
-          <Header as="h3" dividing>
-            Comments
-          </Header>
-
-          <Comment>
-            <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/matt.jpg" />
-            <CommentContent>
-              <CommentAuthor as="a">Matt</CommentAuthor>
-              <CommentMetadata>
-                <div>Today at 5:42PM</div>
-              </CommentMetadata>
-              <CommentText>How artistic!</CommentText>
-              <CommentActions>
-                <CommentAction>Reply</CommentAction>
-              </CommentActions>
-            </CommentContent>
-          </Comment>
-
-          <Comment>
-            <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/elliot.jpg" />
-            <CommentContent>
-              <CommentAuthor as="a">Elliot Fu</CommentAuthor>
-              <CommentMetadata>
-                <div>Yesterday at 12:30AM</div>
-              </CommentMetadata>
-              <CommentText>
-                <p>
-                  This has been very useful for my research. Thanks as well!
-                </p>
-              </CommentText>
-              <CommentActions>
-                <CommentAction>Reply</CommentAction>
-              </CommentActions>
-            </CommentContent>
-            <CommentGroup>
-              <Comment>
-                <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg" />
-                <CommentContent>
-                  <CommentAuthor as="a">Jenny Hess</CommentAuthor>
-                  <CommentMetadata>
-                    <div>Just now</div>
-                  </CommentMetadata>
-                  <CommentText>Elliot you are always so right :)</CommentText>
-                  <CommentActions>
-                    <CommentAction>Reply</CommentAction>
-                  </CommentActions>
-                </CommentContent>
-              </Comment>
-            </CommentGroup>
-          </Comment>
-
-          <Comment>
-            <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/joe.jpg" />
-            <CommentContent>
-              <CommentAuthor as="a">Joe Henderson</CommentAuthor>
-              <CommentMetadata>
-                <div>5 days ago</div>
-              </CommentMetadata>
-              <CommentText>Dude, this is awesome. Thanks so much</CommentText>
-              <CommentActions>
-                <CommentAction>Reply</CommentAction>
-              </CommentActions>
-            </CommentContent>
-          </Comment>
-
-          <Form reply>
-            <FormTextArea />
-            <Button
-              content="Add Reply"
-              labelPosition="left"
-              icon="edit"
-              primary
-            />
-          </Form>
-        </CommentGroup>
+      <Paper sx={{ marginTop: "10px" }} elevation={3}>
+        <Typography variant="h5">Comments</Typography>
+        <Divider />
+        <Box width={"98%"} display="flex" justifyContent="center">
+          <Comments />
+        </Box>
       </Paper>
     </Container>
   );
