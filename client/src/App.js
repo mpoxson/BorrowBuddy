@@ -90,7 +90,6 @@ export default function App() {
             </header>
           </Router>
           <CssBaseline />
-
           <Footers />
         </Box>
       </ThemeProvider>

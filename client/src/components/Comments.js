@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   CommentText,
   CommentMetadata,
@@ -21,9 +21,21 @@ styleLink.href =
   "https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.css";
 document.head.appendChild(styleLink);
 
-function handleComment() {}
+function Comments(props) {
+  const [comment, newComment] = useState("Comment Here");
+  const handleInputs = (event) => {
+    const { name, value } = event.target;
+    newComment(value);
+  };
+  const handleComment = () => {
+    //post comment to back end
+    if (comment.trim() == "" || comment.trim() == "Comment Here") {
+      alert("Please enter a new comment");
+    } else {
+      //post
+    }
+  };
 
-function Comments() {
   return (
     <div
       style={{
@@ -80,7 +92,7 @@ function Comments() {
       </div>
       <div style={{ width: "44%", marginTop: "auto", marginBottom: "auto" }}>
         <Form reply>
-          <FormTextArea />
+          <FormTextArea value={comment} onChange={handleInputs} />
           <Button
             content="Comment"
             labelPosition="left"
