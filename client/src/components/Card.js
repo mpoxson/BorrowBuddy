@@ -24,6 +24,7 @@ function Card(props) {
   let end = "" + props.props.product_available_end_time;
   start = start.slice(0, 10);
   end = end.slice(0, 10);
+  let productId = "" + props.props.product_id;
 
   return (
     <Paper
@@ -74,7 +75,7 @@ function Card(props) {
           }
         />
 
-        <CardActionArea href="#">
+        <CardActionArea href={`/Product/${productId}`}>
           <CardMedia
             component="img"
             height="200"
