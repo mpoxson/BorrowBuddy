@@ -18,6 +18,12 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
+router.get('/',async (req,res)=>{
+  // res.json("hello world!users");
+  const listOfUsers=await users.findAll();
+  res.json(listOfUsers);
+});
+
 router.post("/", async (req,res)=>{
     // const user=req.body;
     // await users.create(user);
