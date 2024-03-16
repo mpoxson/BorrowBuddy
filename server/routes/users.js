@@ -3,10 +3,19 @@ const router = express.Router()
 const {users}=require('../models');
 
 
-router.get('/',async (req,res)=>{
-    // res.send("hello world!users")
-    const listOfUsers=await users.findAll();
-    res.json(listOfUsers);
+router.get('/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+      const user = await users.findByPk(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      res.json({ userName: user.user_name });
+  } catch (error) {
+      console.error('Error fetching user:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 router.post("/", async (req,res)=>{
