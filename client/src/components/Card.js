@@ -75,7 +75,7 @@ function Card(props) {
           }
         />
 
-        <CardActionArea href={`/Product/${productId}`}>
+        <CardActionArea href={`products/${productId}`}>
           <CardMedia
             component="img"
             height="200"
@@ -84,7 +84,7 @@ function Card(props) {
           />
           <CardContent sx={{ color: COLORS.PRIMARY }}>
             <Typography gutterBottom variant="h5" component="div">
-              {props.props.product_name} • ${props.props.product_price}/day
+              {props.props.product_name} • {props.props.product_price}/day
             </Typography>
             <Typography variant="body2" sx={{ color: COLORS.PRIMARY }}>
               {props.props.product_description}
