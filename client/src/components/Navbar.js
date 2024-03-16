@@ -70,13 +70,33 @@ function Navbar({ onLogout }) {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none",
+              textDecoration: "none"
             }}
           >
             BorrowBuddy
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
 
+          <Typography
+                component="a"
+                href={PAGE_ROUTES.LOGIN}
+                sx={{
+                    mr: 2,
+                    display: { xs: "none", md: "flex" },
+                    fontFamily: "arial",
+                    fontWeight: 300,
+                    letterSpacing: ".1rem",
+                    color: "inherit",
+                    textDecoration: "none",
+                    border: "2px solid white",
+                    padding: "5px 10px", 
+                    borderRadius: "15px" 
+                }}
+            >
+                LogIn
+            </Typography>
+
+          
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -94,7 +114,7 @@ function Navbar({ onLogout }) {
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right",
+                horizontal: "right"
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
@@ -119,7 +139,7 @@ function Navbar({ onLogout }) {
                   textAlign="center"
                   color="primary"
                   sx={{
-                    textDecoration: "none",
+                    textDecoration: "none"
                   }}
                 >
                   Logout
