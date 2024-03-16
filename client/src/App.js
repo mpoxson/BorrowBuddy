@@ -11,8 +11,13 @@ import Feedback from "./components/Feedback";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
-import Product from "./components/Product";
-import Footers from "./components/Footer";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Link from "@mui/material/Link";
+import { COLORS } from "./constants/enums";
+import { PAGE_NAMES } from "./constants/enums";
+import Grid from "@mui/material/Unstable_Grid2";
+import ProductEachDetail from "./components/ProductEachDetail";
 
 const theme = createTheme({
   palette: {
@@ -84,7 +89,7 @@ export default function App() {
                   <Route path="/usersList" element={<TestUsersList />} />
                   <Route path="/" element={<Home />} />
                   <Route path="/Feedback" element={<Feedback />} />
-                  <Route path="/Product/:productId" element={<Product />} />
+                  <Route path="/products/:productId" element={<ProductEachDetail />} />
                 </Route>
               </Routes>
             </header>
