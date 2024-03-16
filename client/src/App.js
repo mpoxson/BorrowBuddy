@@ -19,7 +19,7 @@ import { PAGE_NAMES } from "./constants/enums";
 import Grid from "@mui/material/Unstable_Grid2";
 import ProductEachDetail from "./components/ProductEachDetail";
 import butterflyGif from "./image/butterfly_Gif.gif";
-
+import Footers from "./components/Footer";
 const theme = createTheme({
   palette: {
     primary: {
