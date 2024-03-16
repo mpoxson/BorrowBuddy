@@ -47,7 +47,7 @@ function Navbar({ onLogout }) {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none",
+              textDecoration: "none"
             }}
           >
             BorrowBuddy
@@ -66,7 +66,7 @@ function Navbar({ onLogout }) {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none",
+              textDecoration: "none"
             }}
           >
             BorrowBuddy
@@ -90,7 +90,7 @@ function Navbar({ onLogout }) {
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right",
+                horizontal: "right"
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
@@ -115,7 +115,7 @@ function Navbar({ onLogout }) {
                   textAlign="center"
                   color="primary"
                   sx={{
-                    textDecoration: "none",
+                    textDecoration: "none"
                   }}
                 >
                   Logout

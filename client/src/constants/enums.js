@@ -11,7 +11,7 @@ export const PAGE_NAMES = [
   { NAME: "Register", ROUTE: "/register" },
   { NAME: "Login", ROUTE: "/login" },
   { NAME: "UsersList", ROUTE: "/UsersList" },
-  { NAME: "Feedback", ROUTE: "/Feedback" },
+  { NAME: "Feedback", ROUTE: "/Feedback" }
 ];
 
 export const COLORS = {
