@@ -42,9 +42,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        rentee_username: {
-            type: DataTypes.STRING,
+        rentee_id: {
+            type: DataTypes.INTEGER,
             allowNull: true,
+            references: { //Set as foreign key
+                model: 'users', // associated table name
+                key: 'user_id' // Associated field name
+            }
         },
     },
     {

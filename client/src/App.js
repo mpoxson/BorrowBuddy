@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { COLORS as c } from "./constants/enums";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TestUsersList from "./components/TestUsersList";
+import ImageTest from "./components/ImageTest";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
@@ -95,6 +96,7 @@ export default function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/Feedback" element={<Feedback />} />
                   <Route path="/products/:productId" element={<ProductEachDetail />} />
+                  <Route path="/imageTest" element={<ImageTest />} />
                 </Route>
               </Routes>
             </header>
@@ -110,7 +112,7 @@ export default function App() {
             )}
           </div>
 
-          <Footers />
+          {/*<Footers /> */}
         </Box>
       </ThemeProvider>
       {/* Render butterfly image if not authenticated and not login/Register page */}
