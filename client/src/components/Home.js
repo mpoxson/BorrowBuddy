@@ -5,7 +5,7 @@ import axios from "axios";
 
 const Home = () => {
   const [product, setProduct] = useState([]);
-
+  //Get products info. in home page, then transform to form of Cards 
   useEffect(() => {
     axios.get("http://localhost:3001/products").then((response) => {
       console.log(response.data);
