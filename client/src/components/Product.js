@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { COLORS } from "../constants/enums";
@@ -9,10 +9,21 @@ import Pictures from "./Pictures";
 import Comments from "./Comments";
 import img from "../image/test.jpg";
 import { Divider } from "semantic-ui-react";
+import axios from "axios";
 
 const Product = () => {
+  const [product, setProduct] = useState(null);
   let { productId } = useParams();
   console.log(`${productId}`);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/products/${productId}`)
+      .then((response) => {
+        console.log(response.data);
+        setProduct(response.data);
+      });
+  }, [productId]);
 
   const img_array = [img, img, img];
 
@@ -68,10 +79,7 @@ const Product = () => {
               {/* Product meta info */}
               <Box>
                 <Box>
-                  <Typography variant="h6">
-                    BLACK+DECKER 20V MAX* Cordless Reciprocating Saw Kit
-                    (BDCR20C)
-                  </Typography>
+                  <Typography variant="h6">{product.product_name}</Typography>
                 </Box>
                 <Box display={"flex"} justifyContent={"center"}>
                   <Box
@@ -79,7 +87,7 @@ const Product = () => {
                     marginLeft={"-20px"}
                     color={COLORS.ACCENT}
                   >
-                    <Typography>$9.99/Day</Typography>
+                    <Typography>${product.product_price}/Day</Typography>
                   </Box>
                   <Box color={COLORS.ACCENT}>
                     <Typography>100 previous rents</Typography>
@@ -122,9 +130,7 @@ const Product = () => {
               fullWidth
               multiline
               minRows={6}
-              defaultValue={
-                "Our 20V MAX* Variable Speed Cordless Reciprocating Saw is versatile, lightweight, and easy to use. It features a powerful 3000 SPM motor with a variable speed trigger and electric brake to enhance control. Tool-free blade changes and an adjustable pivoting shoe add convenience and ease of use."
-              }
+              defaultValue={product.product_description}
             />
           </Box>
           <Box
@@ -137,7 +143,7 @@ const Product = () => {
               fullWidth
               disabled
               label="Category: "
-              defaultValue="Hand Saws"
+              defaultValue={product.product_category}
             />
             <TextField
               fullWidth

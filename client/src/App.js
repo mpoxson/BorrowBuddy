@@ -61,7 +61,6 @@ export default function App() {
 
   return (
     <div className="App">
-
       <ThemeProvider theme={theme}>
         <Box
           sx={{
@@ -94,21 +93,38 @@ export default function App() {
                   <Route path="/usersList" element={<TestUsersList />} />
                   <Route path="/" element={<Home />} />
                   <Route path="/Feedback" element={<Feedback />} />
-                  <Route path="/products/:productId" element={<ProductEachDetail />} />
+                  <Route path="/products/:productId" element={<Product />} />
                   <Route path="/Product" element={<Product />} />
                 </Route>
               </Routes>
             </header>
           </Router>
           <CssBaseline />
-          
+
           {/* Render butterfly image if not authenticated and not login/Register page */}
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "75vh" }}>
-            {!isAuthenticated && window.location.pathname !== "/login" && window.location.pathname !== "/register" && (
-              <Link href="http://localhost:3000/login">
-                <img src={butterflyGif} alt="Beautiful Butterfly GIF" style={{ transform:"rotate(-45deg)", width: "260px", height: "260px" }} />
-              </Link>
-            )}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "75vh",
+            }}
+          >
+            {!isAuthenticated &&
+              window.location.pathname !== "/login" &&
+              window.location.pathname !== "/register" && (
+                <Link href="http://localhost:3000/login">
+                  <img
+                    src={butterflyGif}
+                    alt="Beautiful Butterfly GIF"
+                    style={{
+                      transform: "rotate(-45deg)",
+                      width: "260px",
+                      height: "260px",
+                    }}
+                  />
+                </Link>
+              )}
           </div>
           <Footers />
         </Box>
