@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { COLORS as c } from "./constants/enums";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import TestUsersList from "./components/TestUsersList";
+import TestUsersList from "./components/UserAccountInfo";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
@@ -11,8 +11,16 @@ import Feedback from "./components/Feedback";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
-import Product from "./components/Product";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Link from "@mui/material/Link";
+import { COLORS } from "./constants/enums";
+import { PAGE_NAMES } from "./constants/enums";
+import Grid from "@mui/material/Unstable_Grid2";
+import ProductEachDetail from "./components/ProductEachDetail";
+import butterflyGif from "./image/butterfly_Gif.gif";
 import Footers from "./components/Footer";
+import Product from "./components/Product";
 
 const theme = createTheme({
   palette: {
@@ -48,10 +56,12 @@ export default function App() {
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("isAuthenticated"); //false when logout
+    return <img src={butterflyGif} alt="Beautiful Butterfly" />;
   };
 
   return (
     <div className="App">
+
       <ThemeProvider theme={theme}>
         <Box
           sx={{
@@ -84,12 +94,22 @@ export default function App() {
                   <Route path="/usersList" element={<TestUsersList />} />
                   <Route path="/" element={<Home />} />
                   <Route path="/Feedback" element={<Feedback />} />
-                  <Route path="/Product/:productId" element={<Product />} />
+                  <Route path="/products/:productId" element={<ProductEachDetail />} />
+                  <Route path="/Product" element={<Product />} />
                 </Route>
               </Routes>
             </header>
           </Router>
           <CssBaseline />
+          
+          {/* Render butterfly image if not authenticated and not login/Register page */}
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "75vh" }}>
+            {!isAuthenticated && window.location.pathname !== "/login" && window.location.pathname !== "/register" && (
+              <Link href="http://localhost:3000/login">
+                <img src={butterflyGif} alt="Beautiful Butterfly GIF" style={{ transform:"rotate(-45deg)", width: "260px", height: "260px" }} />
+              </Link>
+            )}
+          </div>
           <Footers />
         </Box>
       </ThemeProvider>

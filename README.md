@@ -69,6 +69,7 @@ Once the server is running, you can interact with the API endpoints to manage us
 
 - cd ../BorrowBuddy/client
 - npm install @mui/material @emotion/react @emotion/styled
+- npm install @mui/joy
 
 # Swiper
 
