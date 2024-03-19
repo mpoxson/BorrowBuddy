@@ -4,6 +4,7 @@ import { COLORS as c } from "./constants/enums";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TestUsersList from "./components/TestUsersList";
 import ImageTest from "./components/ImageTest";
+import TestUsersList from "./components/UserAccountInfo";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
@@ -20,6 +21,8 @@ import { PAGE_NAMES } from "./constants/enums";
 import Grid from "@mui/material/Unstable_Grid2";
 import ProductEachDetail from "./components/ProductEachDetail";
 import butterflyGif from "./image/butterfly_Gif.gif";
+import Footers from "./components/Footer";
+import Product from "./components/Product";
 
 const theme = createTheme({
   palette: {
@@ -53,16 +56,14 @@ export default function App() {
   };
 
   const handleLogout = () => {
-
     setIsAuthenticated(false);
-    
     localStorage.removeItem("isAuthenticated"); //false when logout
     return <img src={butterflyGif} alt="Beautiful Butterfly" />;
   };
 
   return (
     <div className="App">
-      
+
       <ThemeProvider theme={theme}>
         <Box
           sx={{
@@ -97,12 +98,13 @@ export default function App() {
                   <Route path="/Feedback" element={<Feedback />} />
                   <Route path="/products/:productId" element={<ProductEachDetail />} />
                   <Route path="/imageTest" element={<ImageTest />} />
+                  <Route path="/Product" element={<Product />} />
                 </Route>
               </Routes>
             </header>
           </Router>
           <CssBaseline />
-
+          
           {/* Render butterfly image if not authenticated and not login/Register page */}
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "75vh" }}>
             {!isAuthenticated && window.location.pathname !== "/login" && window.location.pathname !== "/register" && (
@@ -111,13 +113,9 @@ export default function App() {
               </Link>
             )}
           </div>
-
           <Footers />
         </Box>
       </ThemeProvider>
-      {/* Render butterfly image if not authenticated and not login/Register page */}
-      
-              
     </div>
   );
 }
