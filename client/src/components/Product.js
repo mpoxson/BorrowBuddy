@@ -14,7 +14,6 @@ import axios from "axios";
 const Product = () => {
   const [product, setProduct] = useState(null);
   let { productId } = useParams();
-  console.log(`${productId}`);
 
   useEffect(() => {
     axios
@@ -24,6 +23,10 @@ const Product = () => {
         setProduct(response.data);
       });
   }, [productId]);
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
 
   const img_array = [img, img, img];
 

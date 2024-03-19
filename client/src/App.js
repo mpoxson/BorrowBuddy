@@ -104,17 +104,18 @@ export default function App() {
           <CssBaseline />
 
           {/* Render butterfly image if not authenticated and not login/Register page */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              minHeight: "75vh",
-            }}
-          >
-            {!isAuthenticated &&
-              window.location.pathname !== "/login" &&
-              window.location.pathname !== "/register" && (
+
+          {!isAuthenticated &&
+            window.location.pathname !== "/login" &&
+            window.location.pathname !== "/register" && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "75vh",
+                }}
+              >
                 <Link href="http://localhost:3000/login">
                   <img
                     src={butterflyGif}
@@ -126,8 +127,9 @@ export default function App() {
                     }}
                   />
                 </Link>
-              )}
-          </div>
+              </div>
+            )}
+
           <Footers />
         </Box>
       </ThemeProvider>
