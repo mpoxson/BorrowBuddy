@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { COLORS as c } from "./constants/enums";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ImageTest from "./components/ImageTest";
 import TestUsersList from "./components/UserAccountInfo";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -94,6 +95,7 @@ export default function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/Feedback" element={<Feedback />} />
                   <Route path="/products/:productId" element={<Product />} />
+                  <Route path="/imageTest" element={<ImageTest />} />
                   <Route path="/Product" element={<Product />} />
                 </Route>
               </Routes>

@@ -82,6 +82,14 @@ Once the server is running, you can interact with the API endpoints to manage us
 - npm install semantic-ui-react
 - npm install
 
+# Cloud Support
+
+- cd ../BorrowBuddy/server
+- npm install mssql
+- cd ../BorrowBuddy/client
+- npm install firebase
+- npm install uuid
+
 ## Usage
 
 - cd `../BorrowBuddy/client`
