@@ -112,7 +112,7 @@ export default function App() {
             )}
           </div>
 
-          {/*<Footers /> */}
+          <Footers />
         </Box>
       </ThemeProvider>
       {/* Render butterfly image if not authenticated and not login/Register page */}
