@@ -52,7 +52,7 @@ const Register = () => {
           user_email: '',
           user_phone: '',
           user_profile: '',
-          user_profile_picture: '',
+          user_profile_picture: 'https://firebasestorage.googleapis.com/v0/b/borrowbuddy-794c1.appspot.com/o/userAvatars%2Fdefault.png?alt=media&token=6d92169e-78b8-4be5-8493-b5459ae0423e',
           user_password: '',
         }}
         validationSchema={validationSchema}
@@ -101,7 +101,8 @@ const Register = () => {
               <ErrorMessage name="user_profile" component="div" className="error-message" />
             </div>
             {/* this profile_picture may need submit a image, we may need change the type*/}
-            <div className="form-group">
+            {/*Current solution is set default value to default.jpg in firebase and hide form element, then if user wants to change pic, they can edit it later*/}
+            <div className="form-group" hidden>
               <label htmlFor="user_profile_picture">Profile Picture:</label>
               <Field type="text" name="user_profile_picture" />
               <ErrorMessage name="user_profile_picture" component="div" className="error-message" />
