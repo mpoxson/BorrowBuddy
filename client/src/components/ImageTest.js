@@ -22,7 +22,7 @@ import { v4 } from 'uuid';
     - Order of images using listAll is random? If used for product images will be noticeable
     - For profile pics, will need to grab and use id of currently logged in user as part of storage reference
     - Should also delete previous profile pics -> When user confirms pic change, delete rest of contents in folder
-    - Add a default profile picture image -> If userAvatars/[user_id]/ is empty or DNE, use userAvatars/default.jpg
+    - Add a default profile picture image -> If userAvatars/[user_id]/ is empty or DNE, use userAvatars/default.jpg... set form pfp question to hidden with default value to default.jpg?
     - For product images, set limit on amount of pictures? Maybe 4 or 5 total per product?
     - Get individual URLs of product images being displayed, so if owner wants to remove them they can be removed from Firebase
     - Better image management from user before uploaded (being able to select multiple + being able to remove selected images for products, etc.)
