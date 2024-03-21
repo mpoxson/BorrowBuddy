@@ -15,6 +15,8 @@ const Product = () => {
   const [product, setProduct] = useState(null);
   let { productId } = useParams();
 
+  const [error, setError] = useState("");
+
   useEffect(() => {
     axios
       .get(`http://localhost:3001/products/${productId}`)
@@ -29,6 +31,42 @@ const Product = () => {
   }
 
   const img_array = [img, img, img];
+
+  let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
+
+  const handleReserve = async () => {
+    try {
+      let today = new Date();
+      // console.log(today);
+      // let dd = String(today.getDate()).padStart(2, "0");
+      // let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      // let yyyy = today.getFullYear();
+      // today = yyyy + "-" + mm + "-" + dd;
+      // today = Date.parse(today);
+      // console.log(today);
+
+      let data = {
+        product_id: productId,
+        user_id: curr_user,
+        rental_start_time: today,
+        rental_end_time: today,
+        rental_is_return: false,
+        rental_return_time: today,
+        rental_is_damage: false,
+        rental_damage_text: "",
+      };
+
+      //Check if is rented is still no first
+      //set is rented before making product rental
+
+      await axios.post("http://localhost:3001/product_rentals", data);
+      // TODO: Change to manage rentals page
+      console.log("Must've worked");
+    } catch (error) {
+      // Error handling code remains the same
+      console.log("errored out");
+    }
+  };
 
   return (
     <Container
@@ -170,7 +208,15 @@ const Product = () => {
         display="flex"
         justifyContent={"right"}
       >
-        <Button variant="contained">Reserve</Button>
+        {product.product_is_rented == "No" && product.owner_id != curr_user ? (
+          <Button variant="contained" onClick={handleReserve}>
+            Reserve
+          </Button>
+        ) : (
+          <Button variant="contained" disabled>
+            Reserve
+          </Button>
+        )}
       </Box>
 
       {/* Box for comments */}
