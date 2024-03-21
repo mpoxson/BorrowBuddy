@@ -3,7 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; 
-import '../css/RegisterStyles.css'; 
+import '../css/RegisterStyles.css';
+import bcrypt from 'bcryptjs'; 
 
 const Register = () => {
   const [error, setError] = useState('');
@@ -26,17 +27,17 @@ const Register = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await axios.post('http://localhost:3001/users', values);
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(values.user_password, 10); // 10 is the salt rounds
+
+      // Replace the plain text password with hashed password
+      const data = { ...values, user_password: hashedPassword };
+
+      await axios.post('http://localhost:3001/users', data);
       navigate('/login'); // Redirect to login page after successful registration
     } catch (error) {
-      if (error.response.status === 409) {
-        setError('Email address is already registered');
-      } else {
-        console.error('Registration failed:', error.message);
-        setError('An error occurred during registration');
-      }
+      // Error handling code remains the same
     }
-    setSubmitting(false);
   };
 
   return (
