@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Paper from "@mui/material/Paper";
-import { Box, CardHeader, Card as MCard, Tooltip } from "@mui/material";
+import { CardHeader, Card as MCard, Tooltip } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Button, CardActionArea, CardActions } from "@mui/material";
+import { CardActionArea } from "@mui/material";
 import { COLORS } from "../constants/enums";
 import Avatar from "@mui/material/Avatar";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
-import { object } from "yup";
 
 function Card(props) {
   const [saved, setSaved] = useState(false);
+  const [userName, setUserName] = useState("");
+  //invoke database user_name in each card title
+  useEffect(() => {
+    axios.get(`http://localhost:3001/users/${props.props.owner_id}`)
+      .then(response => {
+        setUserName(response.data.userName);
+      })
+      .catch(error => {
+        console.error('Error fetching user:', error);
+      });
+  }, [props.props.owner_id]);
 
   const handleSave = (event) => {
     if (saved === null || saved === false) setSaved(true);
@@ -24,6 +35,7 @@ function Card(props) {
   let end = "" + props.props.product_available_end_time;
   start = start.slice(0, 10);
   end = end.slice(0, 10);
+  let productId = "" + props.props.product_id;
 
   return (
     <Paper
@@ -76,7 +88,7 @@ function Card(props) {
           }
         />
 
-        <CardActionArea href="#">
+        <CardActionArea href={`products/${productId}`}>
           <CardMedia
             component="img"
             height="200"
@@ -85,7 +97,7 @@ function Card(props) {
           />
           <CardContent sx={{ color: COLORS.PRIMARY }}>
             <Typography gutterBottom variant="h5" component="div">
-              {props.props.product_name} • ${props.props.product_price}/day
+              {props.props.product_name} • {props.props.product_price}/day
             </Typography>
             <Typography variant="body2" sx={{ color: COLORS.PRIMARY }}>
               {props.props.product_description}

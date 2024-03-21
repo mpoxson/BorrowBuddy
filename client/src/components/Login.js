@@ -43,7 +43,7 @@ export default function Login(props) {
       const response = await axios.get("http://localhost:3001/users");
       const users = response.data;
       const user = users.find((user) => user.user_email === email);
-      console.log(users);
+      console.log(users);// test; we must comment/delete it to aviod other user see username and passward
       if (user) {
         const passwordMatch = await bcrypt.compare(password, user.user_password);
         if (passwordMatch) {
@@ -73,6 +73,7 @@ export default function Login(props) {
       );
       if (user) {
         console.log("Login successful:", user);
+        localStorage.setItem("user", JSON.stringify(user));//1. Store user data after successful login, 2. used in UserAccountInfo.js
         props.onLogin();
         navigate(PAGE_ROUTES.HOME);
       }
@@ -151,7 +152,7 @@ export default function Login(props) {
               </Link>
             </Grid>
           </Grid>
-        </Box>
+        </Box> 
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>

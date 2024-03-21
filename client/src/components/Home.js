@@ -7,6 +7,7 @@ import MenuIcon from '@mui/icons-material/Menu'; // Material-UI icon for menu
 
 const Home = () => {
   const [product, setProduct] = useState([]);
+
   const [filteredProduct, setFilteredProduct] = useState([]);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
@@ -155,5 +156,5 @@ const handleFilter = () => {
     </div>
   );
 };
-export default Home;
 
+export default Home;
