@@ -10,12 +10,19 @@ import Comments from "./Comments";
 import img from "../image/test.jpg";
 import { Divider } from "semantic-ui-react";
 import axios from "axios";
+import Modal from "@mui/material/Modal";
+import ManageRentals from "./ManageRentals";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
+  const [rental, setRental] = useState(null);
   let { productId } = useParams();
 
   const [error, setError] = useState("");
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     axios
@@ -25,9 +32,21 @@ const Product = () => {
         setProduct(response.data);
       });
   }, [productId]);
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/product_rentals/product/active/${productId}`)
+      .then((response) => {
+        console.log(response.data);
+        setRental(response.data);
+      });
+  }, [productId]);
 
   if (!product) {
     return <div>Loading...</div>;
+  }
+
+  if (!rental) {
+    return "";
   }
 
   const img_array = [img, img, img];
@@ -60,8 +79,8 @@ const Product = () => {
       //set is rented before making product rental
 
       await axios.post("http://localhost:3001/product_rentals", data);
-      // TODO: Change to manage rentals page
       console.log("Must've worked");
+      window.location.reload();
     } catch (error) {
       // Error handling code remains the same
       console.log("errored out");
@@ -202,21 +221,37 @@ const Product = () => {
           </Box>
         </Box>
       </Box>
-      <Box
-        sx={{ marginTop: "5px" }}
-        width={"95%"}
-        display="flex"
-        justifyContent={"right"}
-      >
-        {product.product_is_rented == "No" && product.owner_id != curr_user ? (
-          <Button variant="contained" onClick={handleReserve}>
-            Reserve
-          </Button>
-        ) : (
-          <Button variant="contained" disabled>
-            Reserve
-          </Button>
-        )}
+      <Box sx={{ marginTop: "5px" }} width={"95%"} display="flex">
+        {/* Pull product rental data to see if user is renting data */}
+        <Box width={"100%"} display={"flex"} justifyContent={"left"}>
+          {rental[0] &&
+          (product.owner_id == curr_user || rental[0].user_id == curr_user) ? (
+            <Button variant="contained" onClick={handleOpen}>
+              Manage Rental
+            </Button>
+          ) : (
+            ""
+          )}
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <ManageRentals porps={rental[0]} />
+          </Modal>
+        </Box>
+        <Box width={"100%"} display={"flex"} justifyContent={"right"}>
+          {rental[0] || product.owner_id == curr_user ? (
+            <Button variant="contained" disabled>
+              Reserve
+            </Button>
+          ) : (
+            <Button variant="contained" onClick={handleReserve}>
+              Reserve
+            </Button>
+          )}
+        </Box>
       </Box>
 
       {/* Box for comments */}
