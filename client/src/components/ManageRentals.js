@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 
 const ManageRentals = (props) => {
   const style = {
@@ -19,11 +27,29 @@ const ManageRentals = (props) => {
   return (
     <Box sx={style}>
       <Box>
-        <Box>
-          <Typography>Manage Rental</Typography>
+        <Box display={"flex"} justifyContent={"center"}>
+          <Typography variant="h5">Manage Rental</Typography>
         </Box>
-        <Box>Rental end, Rental damaged (check), rental damaged check</Box>
-        <Box>submit button</Box>
+        <Box>
+          <TextField fullWidth label="Rental End Date: " defaultValue="" />
+          <FormControlLabel
+            value="damaged"
+            control={<Checkbox />}
+            label="Rental Damaged:"
+            labelPlacement="start"
+          />
+          <TextField
+            fullWidth
+            disabled
+            label="Damage Information: "
+            defaultValue=""
+            multiline
+            minRows={3}
+          />
+        </Box>
+        <Box display={"flex"} justifyContent={"right"} marginTop={"4px"}>
+          <Button variant="contained">End Rental</Button>
+        </Box>
       </Box>
     </Box>
   );

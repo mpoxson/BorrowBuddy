@@ -186,7 +186,9 @@ const Product = () => {
             <TextField
               sx={{ marginTop: "9px" }}
               variant="filled"
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               fullWidth
               multiline
               minRows={6}
@@ -201,20 +203,26 @@ const Product = () => {
             <Typography variant="h6">Details</Typography>
             <TextField
               fullWidth
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               label="Category: "
               defaultValue={product.product_category}
             />
             <TextField
               fullWidth
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               label="Start: "
               defaultValue="01/02/23"
               sx={{ marginY: "7px" }}
             />
             <TextField
               fullWidth
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               label="End: "
               defaultValue="01/02/24"
             />
