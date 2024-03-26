@@ -46,6 +46,24 @@ router.post("/", async (req,res)=>{
       }  
 })//This is for frontend 
 
+router.put("/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const user = await users.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user fields based on the request body
+    await user.update(req.body);
+
+    res.json({ message: "User updated successfully" });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
 module.exports=router;
