@@ -46,7 +46,9 @@ function Card(props) {
     >
       <MCard
         sx={{
-          maxWidth: 345,
+	  height: '450px',
+	  width: '100%',
+	  maxWidth: 300,
           backgroundColor: COLORS.SECONDARY,
           border: "solid 1px",
           borderColor: COLORS.ACCENT,
@@ -76,7 +78,7 @@ function Card(props) {
           }
           title={
             <Typography color={COLORS.SECONDARY} variant="h6">
-              {userName}
+		{props.props.rentee_username}
             </Typography>
           }
           subheader={
