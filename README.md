@@ -63,6 +63,7 @@ Once the server is running, you can interact with the API endpoints to manage us
 
 - cd ../BorrowBuddy/client
 - npm install react
+- npm install bcryptjs
 - npm start
 
 # Material UI:
@@ -78,7 +79,7 @@ Once the server is running, you can interact with the API endpoints to manage us
 
 # Semantic UI:
 
-- cd ../BorrowBuddy/clinet
+- cd ../BorrowBuddy/client
 - npm install semantic-ui-react
 - npm install
 
