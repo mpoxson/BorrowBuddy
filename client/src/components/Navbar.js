@@ -14,7 +14,7 @@ import { COLORS, PAGE_NAMES, PAGE_ROUTES } from "../constants/enums";
 
 const settings = PAGE_NAMES;
 
-function Navbar({ onLogout }) {
+function Navbar({ onLogout, isLoggedIn }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -77,26 +77,28 @@ function Navbar({ onLogout }) {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
 
-          <Typography
-                component="a"
-                href={PAGE_ROUTES.LOGIN}
-                sx={{
-                    mr: 2,
-                    display: { xs: "none", md: "flex" },
-                    fontFamily: "arial",
-                    fontWeight: 300,
-                    letterSpacing: ".1rem",
-                    color: "inherit",
-                    textDecoration: "none",
-                    border: "2px solid white",
-                    padding: "5px 10px", 
-                    borderRadius: "15px" 
-                }}
+          {/* Conditionally render login button based on authentication status */}
+          {!isLoggedIn && (
+            <Typography
+              component="a"
+              href={PAGE_ROUTES.LOGIN}
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "arial",
+                fontWeight: 300,
+                letterSpacing: ".1rem",
+                color: "inherit",
+                textDecoration: "none",
+                border: "2px solid white",
+                padding: "5px 10px",
+                borderRadius: "15px",
+              }}
             >
-                LogIn
+              LogIn
             </Typography>
+          )}
 
-          
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

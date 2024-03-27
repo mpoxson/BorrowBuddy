@@ -39,6 +39,7 @@ const theme = createTheme({
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const redirectTo = null; //NOTE: INITIALIZE SHOULD BE NULL
+  const [disableLoginButton, setDisableLoginButton] = useState(false);
 
   useEffect(() => {
     // Check if user is already authenticated in localStorage
@@ -51,11 +52,14 @@ export default function App() {
   const handleLogin = () => {
     setIsAuthenticated(true);
     localStorage.setItem("isAuthenticated", JSON.stringify(true)); //The purpose of localStorage is to keep it true when login
+    setDisableLoginButton(true); // Disable login button after successful login
+  
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("isAuthenticated"); //false when logout
+    setDisableLoginButton(false); // Enable login button after logout
     return <img src={butterflyGif} alt="Beautiful Butterfly" />;
   };
 
@@ -70,7 +74,7 @@ export default function App() {
             minHeight: "100vh",
           }}
         >
-          <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+          <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} isLoggedIn={isAuthenticated} disableLoginButton={disableLoginButton}/>
           <Router>
             <header className="App-header">
               <Routes>
@@ -116,3 +120,4 @@ export default function App() {
     </div>
   );
 }
+
