@@ -11,20 +11,59 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
+import { storage } from "../firebase/config";
+import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
 
 function Card(props) {
   const [saved, setSaved] = useState(false);
   const [userName, setUserName] = useState("");
+
+  //For page displaying images
+  const [imageAva, setImageAva] = useState([]);
+  const [imageSingle, setImageSingle] = useState([]);
+
+  //Reference to test "images" folder
+  const imageAvaRef = ref(storage, "userAvatars/");
+  const imageSingleRef = ref(storage, "testImages/");
+
   //invoke database user_name in each card title
   useEffect(() => {
-    axios.get(`http://localhost:3001/users/${props.props.owner_id}`)
-      .then(response => {
+    axios
+      .get(`http://localhost:3001/users/${props.props.owner_id}`)
+      .then((response) => {
         setUserName(response.data.userName);
       })
-      .catch(error => {
-        console.error('Error fetching user:', error);
+      .catch((error) => {
+        console.error("Error fetching user:", error);
       });
   }, [props.props.owner_id]);
+  useEffect(() => {
+    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
+    listAll(imageAvaRef).then((response) => {
+      //To display images, for each file in reference folder:
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          //Update image list as array of image URLs
+          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
+          setImageAva((prev) => [...new Set([...prev, url])]);
+        });
+      });
+    });
+  }, []);
+  useEffect(() => {
+    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
+    listAll(imageSingleRef).then((response) => {
+      //To display images, for each file in reference folder:
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          //Update image list as array of image URLs
+          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
+          setImageSingle((prev) => [...new Set([...prev, url])]);
+        });
+      });
+    });
+  }, []);
 
   const handleSave = (event) => {
     if (saved === null || saved === false) setSaved(true);
@@ -46,9 +85,9 @@ function Card(props) {
     >
       <MCard
         sx={{
-	  height: '450px',
-	  width: '100%',
-	  maxWidth: 300,
+          height: "450px",
+          width: "100%",
+          maxWidth: 300,
           backgroundColor: COLORS.SECONDARY,
           border: "solid 1px",
           borderColor: COLORS.ACCENT,
@@ -60,11 +99,7 @@ function Card(props) {
             color: COLORS.SECONDARY,
           }}
           //handle images
-          avatar={
-            <Avatar sx={{ bgcolor: COLORS.ACCENT }} aria-label="Profile Pic">
-              T
-            </Avatar>
-          }
+          avatar={<Avatar src={imageAva[0]} aria-label="Profile Pic" />}
           action={
             <Tooltip title="Save" disableInteractive arrow>
               <IconButton aria-label="Save" onClick={handleSave}>
@@ -78,7 +113,7 @@ function Card(props) {
           }
           title={
             <Typography color={COLORS.SECONDARY} variant="h6">
-		{props.props.rentee_username}
+              {props.props.rentee_username}
             </Typography>
           }
           subheader={
@@ -92,7 +127,7 @@ function Card(props) {
           <CardMedia
             component="img"
             height="200"
-            image={require("../image/test.jpg")}
+            image={imageSingle[0]}
             alt="green iguana"
           />
           <CardContent sx={{ color: COLORS.PRIMARY }}>

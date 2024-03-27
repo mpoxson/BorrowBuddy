@@ -12,10 +12,14 @@ import { Divider } from "semantic-ui-react";
 import axios from "axios";
 import Modal from "@mui/material/Modal";
 import ManageRentals from "./ManageRentals";
+import { storage } from "../firebase/config";
+import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
   const [rental, setRental] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
   let { productId } = useParams();
 
   const [error, setError] = useState("");
@@ -24,6 +28,12 @@ const Product = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  //For page displaying images
+  const [imageList, setImageList] = useState([]);
+
+  //Reference to test "images" folder
+  const imageListRef = ref(storage, "testImages/");
+
   useEffect(() => {
     axios
       .get(`http://localhost:3001/products/${productId}`)
@@ -31,7 +41,7 @@ const Product = () => {
         console.log(response.data);
         setProduct(response.data);
       });
-  }, [productId]);
+  }, [refreshData]);
   useEffect(() => {
     axios
       .get(`http://localhost:3001/product_rentals/product/active/${productId}`)
@@ -40,6 +50,19 @@ const Product = () => {
         setRental(response.data);
       });
   }, [productId]);
+  useEffect(() => {
+    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
+    listAll(imageListRef).then((response) => {
+      //To display images, for each file in reference folder:
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          //Update image list as array of image URLs
+          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
+          setImageList((prev) => [...new Set([...prev, url])]);
+        });
+      });
+    });
+  }, []);
 
   if (!product) {
     return <div>Loading...</div>;
@@ -49,12 +72,16 @@ const Product = () => {
     return "";
   }
 
-  const img_array = [img, img, img];
+  //const img_array = [img, img, img];
 
   let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
   const handleReserve = async () => {
     try {
+      setRefreshData(!refreshData);
+      if (product.product_is_rented.toLowerCase() == "yes") {
+        return alert("Product already rented!");
+      }
       let today = new Date();
       // console.log(today);
       // let dd = String(today.getDate()).padStart(2, "0");
@@ -75,15 +102,18 @@ const Product = () => {
         rental_damage_text: "",
       };
 
+      let updates = {
+        product_is_rented: "yes",
+      };
+
       //Check if is rented is still no first
       //set is rented before making product rental
-
+      await axios.put(`http://localhost:3001/products/${productId}`, updates);
       await axios.post("http://localhost:3001/product_rentals", data);
-      console.log("Must've worked");
       window.location.reload();
     } catch (error) {
       // Error handling code remains the same
-      console.log("errored out");
+      console.log("errored out: " + error);
     }
   };
 
@@ -101,7 +131,7 @@ const Product = () => {
       <Box>
         <Box display={"flex"} justifyContent={"center"} maxWidth={"100%"}>
           <div style={{ width: "100%" }}>
-            <Pictures props={img_array} />
+            <Pictures props={imageList} />
           </div>
         </Box>
         {/* Box for user info section */}
