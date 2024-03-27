@@ -19,6 +19,7 @@ import { v4 } from "uuid";
 const Product = () => {
   const [product, setProduct] = useState(null);
   const [rental, setRental] = useState(null);
+  const [user, setUser] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
   let { productId } = useParams();
 
@@ -51,6 +52,16 @@ const Product = () => {
       });
   }, [productId]);
   useEffect(() => {
+    if (product != null) {
+      axios
+        .get(`http://localhost:3001/users/${product.owner_id}`)
+        .then((response) => {
+          console.log(response.data);
+          setUser(response.data);
+        });
+    }
+  }, [product]);
+  useEffect(() => {
     //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
     listAll(imageListRef).then((response) => {
       //To display images, for each file in reference folder:
@@ -69,6 +80,10 @@ const Product = () => {
   }
 
   if (!rental) {
+    return "";
+  }
+
+  if (!user) {
     return "";
   }
 
@@ -158,9 +173,9 @@ const Product = () => {
                   </Avatar>
                 </Box>
                 <Box marginLeft={"20px"} marginRight={"-20px"} marginY={"auto"}>
-                  <Typography>Murphy Poxson</Typography>
+                  <Typography>{user.user_name}</Typography>
                   <Box>
-                    <Typography>Sterling Heights</Typography>
+                    <Typography>{user.user_city}</Typography>
                     <Typography>4.5/5</Typography>
                   </Box>
                 </Box>
