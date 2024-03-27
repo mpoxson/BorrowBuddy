@@ -37,6 +37,7 @@ function Navbar({ onLogout }) {
           <img
             src={require("../image/borrowbuddy_logo.png")}
             alt="BorrowBuddy logo"
+            style={{ marginRight: "15px" }}
           />
           <Typography
             variant="h6"
@@ -56,7 +57,6 @@ function Navbar({ onLogout }) {
           >
             BorrowBuddy
           </Typography>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -70,7 +70,7 @@ function Navbar({ onLogout }) {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none"
+              textDecoration: "none",
             }}
           >
             BorrowBuddy
@@ -78,25 +78,24 @@ function Navbar({ onLogout }) {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
 
           <Typography
-                component="a"
-                href={PAGE_ROUTES.LOGIN}
-                sx={{
-                    mr: 2,
-                    display: { xs: "none", md: "flex" },
-                    fontFamily: "arial",
-                    fontWeight: 300,
-                    letterSpacing: ".1rem",
-                    color: "inherit",
-                    textDecoration: "none",
-                    border: "2px solid white",
-                    padding: "5px 10px", 
-                    borderRadius: "15px" 
-                }}
-            >
-                LogIn
-            </Typography>
+            component="a"
+            href={PAGE_ROUTES.LOGIN}
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "arial",
+              fontWeight: 300,
+              letterSpacing: ".1rem",
+              color: "inherit",
+              textDecoration: "none",
+              border: "2px solid white",
+              padding: "5px 10px",
+              borderRadius: "15px",
+            }}
+          >
+            LogIn
+          </Typography>
 
-          
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -114,7 +113,7 @@ function Navbar({ onLogout }) {
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right"
+                horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
@@ -139,7 +138,7 @@ function Navbar({ onLogout }) {
                   textAlign="center"
                   color="primary"
                   sx={{
-                    textDecoration: "none"
+                    textDecoration: "none",
                   }}
                 >
                   Logout
