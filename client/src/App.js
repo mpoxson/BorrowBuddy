@@ -80,6 +80,7 @@ export default function App() {
                   element={<Login onLogin={handleLogin} />}
                 />
                 <Route path="/register" element={<Register />} />
+                <Route path="/" element={ isAuthenticated ? <Home /> : <Login />} />
 
                 {/* These routes are protected page, add more below... */}
                 <Route
