@@ -28,6 +28,12 @@ app.use("/product_saves", product_savesRouter);
 const product_imagesRouter = require("./routes/product_images");
 app.use("/product_images", product_imagesRouter);
 
+const conversationsRouter = require("./routes/Conversations");
+app.use("/Conversations", conversationsRouter);
+
+const messagesRouter = require("./routes/Messages");
+app.use("/Messages", messagesRouter);
+
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("Server running on port 3001");

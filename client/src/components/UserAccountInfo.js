@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import "../App.css";
+import { storage } from "../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const TestUsersList = () => {
   const [user, setUser] = useState(null);
@@ -42,6 +44,52 @@ const TestUsersList = () => {
       console.error('Error updating user information:', error);
     }
   };
+
+
+  //Updates PFP in database after uploading image
+  const picturePatch = async () => {
+    try {
+      const response = await axios.put(`http://localhost:3001/users/${user.user_id}`, 
+      {
+        user_profile_picture: editableFields.user_profile_picture
+      });
+      if (response.status === 200) {
+        console.log('Profile picture updated successfully');
+      } else {
+        console.error('Failed to update profile picture');
+      }
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+    }
+  }
+
+
+  //User choosing image
+  const [imageUpload, setImageUpload] = useState(null);
+      //const imageListRef = ref(storage, `userAvatars/${user.user_id}/`);
+
+      //stores image in userAvatars/[user_id]/pfp.png (Overwrites automatically)
+      const uploadImage = () => {
+          if (imageUpload == null) return;
+          //Create reference for where to store image
+          const imageRef = ref(storage, `userAvatars/${user.user_id}/pfp.png`)
+          /*Used to upload an image to Firebase.
+            Note uploaded images are public access */
+          uploadBytes(imageRef, imageUpload).then((snapshot) => {
+              //alert("Image Uploaded");
+              getDownloadURL(snapshot.ref).then((url) => {
+                      editableFields.user_profile_picture = url;
+                      user.user_profile_picture = url;
+                      picturePatch();        
+              })
+          });
+      };
+
+      //wrapper function for both uploadImage and handleUpdate on clicking Update button
+      const wrapperFunction = () => {
+        uploadImage();
+        handleUpdate();
+      }
 
   return (
     <div>
@@ -152,15 +200,17 @@ const TestUsersList = () => {
             Profile picture:{" "}
             {editableFields.user_profile_picture ? (
               <input
-                type="text"
+                type="file"
                 name="user_profile_picture"
-                value={editableFields.user_profile_picture || user.user_profile_picture}
-                onChange={handleChange}
+                /*value={editableFields.user_profile_picture || user.user_profile_picture}*/
+                onChange={(event) => {setImageUpload(event.target.files[0]);}}
               />
             ) : (
-              <span>{user.user_profile_picture}</span>
+              //PFP displayed here, usually doesn't update without refresh... couldn't figure this out
+              //Use user.user_profile_picture as src to display PFP on other pages
+              <span><img id="pfp" src={user.user_profile_picture} alt="Profile picture" width="200" height="200" key={user.user_profile_picture}/></span>
             )}
-            <button onClick={() => handleEdit("user_profile_picture")}>Upload</button>
+            <button onClick={() => handleEdit("user_profile_picture")}>Edit</button>
           </p>
         </div>
       ) : (
@@ -170,7 +220,7 @@ const TestUsersList = () => {
       <br />
       <br />
       {isEditing && (
-        <button onClick={handleUpdate}>Update</button>
+        <button onClick={wrapperFunction}>Update</button>
       )}
     </div>
   );
