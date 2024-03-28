@@ -11,10 +11,10 @@ function AddProduct(props) {
     e.preventDefault()
 
       const data ={
-        product_name:
-        product_desciption:
-        product_price:
-        product_category:
+        product_name:'',
+        product_desciption:'',
+        product_price:'',
+        product_category:''
 
       }
     axios.post('http://localhost:3001/',data)
