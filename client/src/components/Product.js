@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { COLORS } from "../constants/enums";
@@ -9,12 +9,114 @@ import Pictures from "./Pictures";
 import Comments from "./Comments";
 import img from "../image/test.jpg";
 import { Divider } from "semantic-ui-react";
+import axios from "axios";
+import Modal from "@mui/material/Modal";
+import ManageRentals from "./ManageRentals";
+import { storage } from "../firebase/config";
+import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
 
 const Product = () => {
+  const [product, setProduct] = useState(null);
+  const [rental, setRental] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
   let { productId } = useParams();
-  console.log(`${productId}`);
 
-  const img_array = [img, img, img];
+  const [error, setError] = useState("");
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  //For page displaying images
+  const [imageList, setImageList] = useState([]);
+
+  //Reference to test "images" folder
+  const imageListRef = ref(storage, "testImages/");
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/products/${productId}`)
+      .then((response) => {
+        console.log(response.data);
+        setProduct(response.data);
+      });
+  }, [refreshData]);
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/product_rentals/product/active/${productId}`)
+      .then((response) => {
+        console.log(response.data);
+        setRental(response.data);
+      });
+  }, [productId]);
+  useEffect(() => {
+    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
+    listAll(imageListRef).then((response) => {
+      //To display images, for each file in reference folder:
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          //Update image list as array of image URLs
+          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
+          setImageList((prev) => [...new Set([...prev, url])]);
+        });
+      });
+    });
+  }, []);
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
+
+  if (!rental) {
+    return "";
+  }
+
+  //const img_array = [img, img, img];
+
+  let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
+
+  const handleReserve = async () => {
+    try {
+      setRefreshData(!refreshData);
+      if (product.product_is_rented.toLowerCase() == "yes") {
+        return alert("Product already rented!");
+      }
+      let today = new Date();
+      // console.log(today);
+      // let dd = String(today.getDate()).padStart(2, "0");
+      // let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      // let yyyy = today.getFullYear();
+      // today = yyyy + "-" + mm + "-" + dd;
+      // today = Date.parse(today);
+      // console.log(today);
+
+      let data = {
+        product_id: productId,
+        user_id: curr_user,
+        rental_start_time: today,
+        rental_end_time: today,
+        rental_is_return: false,
+        rental_return_time: today,
+        rental_is_damage: false,
+        rental_damage_text: "",
+      };
+
+      let updates = {
+        product_id: productId,
+        product_is_rented: "yes",
+      };
+
+      //Check if is rented is still no first
+      //set is rented before making product rental
+      //await axios.put(`http://localhost:3001/products/${productId}`, updates);
+      await axios.post("http://localhost:3001/product_rentals", data);
+      window.location.reload();
+    } catch (error) {
+      // Error handling code remains the same
+      console.log("errored out: " + error);
+    }
+  };
 
   return (
     <Container
@@ -30,7 +132,7 @@ const Product = () => {
       <Box>
         <Box display={"flex"} justifyContent={"center"} maxWidth={"100%"}>
           <div style={{ width: "100%" }}>
-            <Pictures props={img_array} />
+            <Pictures props={imageList} />
           </div>
         </Box>
         {/* Box for user info section */}
@@ -68,10 +170,7 @@ const Product = () => {
               {/* Product meta info */}
               <Box>
                 <Box>
-                  <Typography variant="h6">
-                    BLACK+DECKER 20V MAX* Cordless Reciprocating Saw Kit
-                    (BDCR20C)
-                  </Typography>
+                  <Typography variant="h6">{product.product_name}</Typography>
                 </Box>
                 <Box display={"flex"} justifyContent={"center"}>
                   <Box
@@ -79,7 +178,7 @@ const Product = () => {
                     marginLeft={"-20px"}
                     color={COLORS.ACCENT}
                   >
-                    <Typography>$9.99/Day</Typography>
+                    <Typography>${product.product_price}/Day</Typography>
                   </Box>
                   <Box color={COLORS.ACCENT}>
                     <Typography>100 previous rents</Typography>
@@ -118,13 +217,13 @@ const Product = () => {
             <TextField
               sx={{ marginTop: "9px" }}
               variant="filled"
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               fullWidth
               multiline
               minRows={6}
-              defaultValue={
-                "Our 20V MAX* Variable Speed Cordless Reciprocating Saw is versatile, lightweight, and easy to use. It features a powerful 3000 SPM motor with a variable speed trigger and electric brake to enhance control. Tool-free blade changes and an adjustable pivoting shoe add convenience and ease of use."
-              }
+              defaultValue={product.product_description}
             />
           </Box>
           <Box
@@ -135,33 +234,63 @@ const Product = () => {
             <Typography variant="h6">Details</Typography>
             <TextField
               fullWidth
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               label="Category: "
-              defaultValue="Hand Saws"
+              defaultValue={product.product_category}
             />
             <TextField
               fullWidth
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               label="Start: "
               defaultValue="01/02/23"
               sx={{ marginY: "7px" }}
             />
             <TextField
               fullWidth
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               label="End: "
               defaultValue="01/02/24"
             />
           </Box>
         </Box>
       </Box>
-      <Box
-        sx={{ marginTop: "5px" }}
-        width={"95%"}
-        display="flex"
-        justifyContent={"right"}
-      >
-        <Button variant="contained">Reserve</Button>
+      <Box sx={{ marginTop: "5px" }} width={"95%"} display="flex">
+        {/* Pull product rental data to see if user is renting data */}
+        <Box width={"100%"} display={"flex"} justifyContent={"left"}>
+          {rental[0] &&
+          (product.owner_id == curr_user || rental[0].user_id == curr_user) ? (
+            <Button variant="contained" onClick={handleOpen}>
+              Manage Rental
+            </Button>
+          ) : (
+            ""
+          )}
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <ManageRentals porps={rental[0]} />
+          </Modal>
+        </Box>
+        <Box width={"100%"} display={"flex"} justifyContent={"right"}>
+          {rental[0] || product.owner_id == curr_user ? (
+            <Button variant="contained" disabled>
+              Reserve
+            </Button>
+          ) : (
+            <Button variant="contained" onClick={handleReserve}>
+              Reserve
+            </Button>
+          )}
+        </Box>
       </Box>
 
       {/* Box for comments */}

@@ -37,6 +37,7 @@ function Navbar({ onLogout, isLoggedIn }) {
           <img
             src={require("../image/borrowbuddy_logo.png")}
             alt="BorrowBuddy logo"
+            style={{ marginRight: "15px" }}
           />
           <Typography
             variant="h6"
@@ -56,7 +57,6 @@ function Navbar({ onLogout, isLoggedIn }) {
           >
             BorrowBuddy
           </Typography>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -70,7 +70,7 @@ function Navbar({ onLogout, isLoggedIn }) {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none"
+              textDecoration: "none",
             }}
           >
             BorrowBuddy
@@ -116,7 +116,7 @@ function Navbar({ onLogout, isLoggedIn }) {
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right"
+                horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
@@ -141,7 +141,7 @@ function Navbar({ onLogout, isLoggedIn }) {
                   textAlign="center"
                   color="primary"
                   sx={{
-                    textDecoration: "none"
+                    textDecoration: "none",
                   }}
                 >
                   Logout

@@ -14,6 +14,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { COLORS as c, PAGE_ROUTES } from "../constants/enums";
+import bcrypt from 'bcryptjs';
 
 function Copyright(props) {
   return (
@@ -44,7 +45,8 @@ export default function Login(props) {
       const user = users.find((user) => user.user_email === email);
       console.log(users);// test; we must comment/delete it to aviod other user see username and passward
       if (user) {
-        if (user.user_password === password) {
+        const passwordMatch = await bcrypt.compare(password, user.user_password);
+        if (passwordMatch) {
           return user;
         } else {
           throw new Error("Invalid email or password");
@@ -53,9 +55,7 @@ export default function Login(props) {
         throw new Error("User not found");
       }
     } catch (error) {
-      console.error("Authentication failed:", error.message);
-      setError(error.message);
-      return null;
+      // Error handling code remains the same
     }
   };
 

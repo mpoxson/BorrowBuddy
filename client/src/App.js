@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { COLORS as c } from "./constants/enums";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ImageTest from "./components/ImageTest";
 import TestUsersList from "./components/UserAccountInfo";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -65,7 +66,6 @@ export default function App() {
 
   return (
     <div className="App">
-
       <ThemeProvider theme={theme}>
         <Box
           sx={{
@@ -84,6 +84,7 @@ export default function App() {
                   element={<Login onLogin={handleLogin} />}
                 />
                 <Route path="/register" element={<Register />} />
+                <Route path="/" element={ isAuthenticated ? <Home /> : <Login />} />
 
                 {/* These routes are protected page, add more below... */}
                 <Route
@@ -98,22 +99,42 @@ export default function App() {
                   <Route path="/usersList" element={<TestUsersList />} />
                   <Route path="/" element={<Home />} />
                   <Route path="/Feedback" element={<Feedback />} />
-                  <Route path="/products/:productId" element={<ProductEachDetail />} />
+                  <Route path="/products/:productId" element={<Product />} />
+                  <Route path="/imageTest" element={<ImageTest />} />
                   <Route path="/Product" element={<Product />} />
                 </Route>
               </Routes>
             </header>
           </Router>
           <CssBaseline />
-          
+
           {/* Render butterfly image if not authenticated and not login/Register page */}
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "75vh" }}>
-            {!isAuthenticated && window.location.pathname !== "/login" && window.location.pathname !== "/register" && (
-              <Link href="http://localhost:3000/login">
-                <img src={butterflyGif} alt="Beautiful Butterfly GIF" style={{ transform:"rotate(-45deg)", width: "260px", height: "260px" }} />
-              </Link>
+
+          {!isAuthenticated &&
+            window.location.pathname !== "/login" &&
+            window.location.pathname !== "/register" && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "75vh",
+                }}
+              >
+                <Link href="http://localhost:3000/login">
+                  <img
+                    src={butterflyGif}
+                    alt="Beautiful Butterfly GIF"
+                    style={{
+                      transform: "rotate(-45deg)",
+                      width: "260px",
+                      height: "260px",
+                    }}
+                  />
+                </Link>
+              </div>
             )}
-          </div>
+
           <Footers />
         </Box>
       </ThemeProvider>
