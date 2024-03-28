@@ -22,6 +22,8 @@ import ProductEachDetail from "./components/ProductEachDetail";
 import butterflyGif from "./image/butterfly_Gif.gif";
 import Footers from "./components/Footer";
 import Product from "./components/Product";
+import Conversations from "./components/Conversations";
+import Messages from "./components/Messages";
 
 const theme = createTheme({
   palette: {
@@ -98,6 +100,8 @@ export default function App() {
                   <Route path="/products/:productId" element={<ProductEachDetail />} />
                   <Route path="/imageTest" element={<ImageTest />} />
                   <Route path="/Product" element={<Product />} />
+                  <Route path="/Conversations" element={<Conversations />} />
+                  <Route path="/messages/:messageId" element={<Messages />} />
                 </Route>
               </Routes>
             </header>
