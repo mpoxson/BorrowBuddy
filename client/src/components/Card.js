@@ -32,7 +32,7 @@ function Card(props) {
     axios
       .get(`http://localhost:3001/users/${props.props.owner_id}`)
       .then((response) => {
-        setUserName(response.data.userName);
+        setUserName(response.data);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -113,7 +113,7 @@ function Card(props) {
           }
           title={
             <Typography color={COLORS.SECONDARY} variant="h6">
-              {props.props.rentee_username}
+              {userName.user_name}
             </Typography>
           }
           subheader={
@@ -145,7 +145,7 @@ function Card(props) {
             </Typography>
             <Typography></Typography>
             <Typography variant="caption" sx={{ color: COLORS.PRIMARY }}>
-              Location: Detroit
+              Location: {userName.user_city}, {userName.user_state}
             </Typography>
           </CardContent>
         </CardActionArea>

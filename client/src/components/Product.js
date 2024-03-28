@@ -19,7 +19,11 @@ import { v4 } from "uuid";
 const Product = () => {
   const [product, setProduct] = useState(null);
   const [rental, setRental] = useState(null);
+  const [user, setUser] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
+  const [imageAva, setImageAva] = useState([]);
+  const [edit, setEdit] = useState(true);
+  const imageAvaRef = ref(storage, "userAvatars/");
   let { productId } = useParams();
 
   const [error, setError] = useState("");
@@ -51,6 +55,16 @@ const Product = () => {
       });
   }, [productId]);
   useEffect(() => {
+    if (product != null) {
+      axios
+        .get(`http://localhost:3001/users/${product.owner_id}`)
+        .then((response) => {
+          console.log(response.data);
+          setUser(response.data);
+        });
+    }
+  }, [product]);
+  useEffect(() => {
     //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
     listAll(imageListRef).then((response) => {
       //To display images, for each file in reference folder:
@@ -63,12 +77,29 @@ const Product = () => {
       });
     });
   }, []);
+  useEffect(() => {
+    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
+    listAll(imageAvaRef).then((response) => {
+      //To display images, for each file in reference folder:
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          //Update image list as array of image URLs
+          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
+          setImageAva((prev) => [...new Set([...prev, url])]);
+        });
+      });
+    });
+  }, []);
 
   if (!product) {
     return <div>Loading...</div>;
   }
 
   if (!rental) {
+    return "";
+  }
+
+  if (!user) {
     return "";
   }
 
@@ -147,20 +178,12 @@ const Product = () => {
             <Grid xs={2}>
               <Box sx={{ display: "flex" }}>
                 <Box marginY={"auto"}>
-                  {/* <Avatar alt="Remy Sharp" src={imgLink} /> */}
-                  <Avatar
-                    sx={{
-                      bgcolor: COLORS.ACCENT,
-                    }}
-                    aria-label="Profile Pic"
-                  >
-                    T
-                  </Avatar>
+                  <Avatar src={imageAva[0]} aria-label="Profile Pic" />
                 </Box>
                 <Box marginLeft={"20px"} marginRight={"-20px"} marginY={"auto"}>
-                  <Typography>Murphy Poxson</Typography>
+                  <Typography>{user.user_name}</Typography>
                   <Box>
-                    <Typography>Sterling Heights</Typography>
+                    <Typography>{user.user_city}</Typography>
                     <Typography>4.5/5</Typography>
                   </Box>
                 </Box>
@@ -188,16 +211,33 @@ const Product = () => {
             </Grid>
             <Grid xs={2}>
               <Box marginY={"auto"}>
-                <Button
-                  sx={{
-                    marginTop: "5px",
-                    color: COLORS.SECONDARY,
-                    borderColor: COLORS.SECONDARY,
-                  }}
-                  variant="outlined"
-                >
-                  Edit
-                </Button>
+                {product.owner_id == curr_user ? (
+                  <Button
+                    sx={{
+                      marginTop: "5px",
+                      color: COLORS.SECONDARY,
+                      borderColor: COLORS.SECONDARY,
+                    }}
+                    variant="outlined"
+                    onClick={() => {
+                      setEdit(false);
+                    }}
+                  >
+                    Edit 
+                  </Button>
+                ) : (
+                  <Button
+                    sx={{
+                      marginTop: "5px",
+                      color: COLORS.SECONDARY,
+                      borderColor: COLORS.SECONDARY,
+                    }}
+                    variant="outlined"
+                    onClick={handleRate}
+                  >
+                    Rate
+                  </Button>
+                )}
               </Box>
             </Grid>
           </Grid>
@@ -218,7 +258,7 @@ const Product = () => {
               sx={{ marginTop: "9px" }}
               variant="filled"
               InputProps={{
-                readOnly: true,
+                readOnly: edit,
               }}
               fullWidth
               multiline
@@ -235,7 +275,7 @@ const Product = () => {
             <TextField
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: edit,
               }}
               label="Category: "
               defaultValue={product.product_category}
@@ -243,7 +283,7 @@ const Product = () => {
             <TextField
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: edit,
               }}
               label="Start: "
               defaultValue="01/02/23"
@@ -252,7 +292,7 @@ const Product = () => {
             <TextField
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: edit,
               }}
               label="End: "
               defaultValue="01/02/24"
