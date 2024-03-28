@@ -223,7 +223,7 @@ const Product = () => {
                       setEdit(false);
                     }}
                   >
-                    Edit 
+                    Edit
                   </Button>
                 ) : (
                   <Button
@@ -233,7 +233,6 @@ const Product = () => {
                       borderColor: COLORS.SECONDARY,
                     }}
                     variant="outlined"
-                    onClick={handleRate}
                   >
                     Rate
                   </Button>
