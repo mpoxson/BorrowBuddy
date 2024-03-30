@@ -22,6 +22,8 @@ import ProductEachDetail from "./components/ProductEachDetail";
 import butterflyGif from "./image/butterfly_Gif.gif";
 import Footers from "./components/Footer";
 import Product from "./components/Product";
+import Conversations from "./components/Conversations";
+import Messages from "./components/Messages";
 
 const theme = createTheme({
   palette: {
@@ -40,6 +42,7 @@ const theme = createTheme({
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const redirectTo = null; //NOTE: INITIALIZE SHOULD BE NULL
+  const [disableLoginButton, setDisableLoginButton] = useState(false);
 
   useEffect(() => {
     // Check if user is already authenticated in localStorage
@@ -52,11 +55,14 @@ export default function App() {
   const handleLogin = () => {
     setIsAuthenticated(true);
     localStorage.setItem("isAuthenticated", JSON.stringify(true)); //The purpose of localStorage is to keep it true when login
+    setDisableLoginButton(true); // Disable login button after successful login
+  
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("isAuthenticated"); //false when logout
+    setDisableLoginButton(false); // Enable login button after logout
     return <img src={butterflyGif} alt="Beautiful Butterfly" />;
   };
 
@@ -70,7 +76,7 @@ export default function App() {
             minHeight: "100vh",
           }}
         >
-          <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+          <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} isLoggedIn={isAuthenticated} disableLoginButton={disableLoginButton}/>
           <Router>
             <header className="App-header">
               <Routes>
@@ -80,6 +86,7 @@ export default function App() {
                   element={<Login onLogin={handleLogin} />}
                 />
                 <Route path="/register" element={<Register />} />
+                <Route path="/" element={ isAuthenticated ? <Home /> : <Login />} />
 
                 {/* These routes are protected page, add more below... */}
                 <Route
@@ -97,6 +104,8 @@ export default function App() {
                   <Route path="/products/:productId" element={<Product />} />
                   <Route path="/imageTest" element={<ImageTest />} />
                   <Route path="/Product" element={<Product />} />
+                  <Route path="/Conversations" element={<Conversations />} />
+                  <Route path="/messages/:messageId" element={<Messages />} />
                 </Route>
               </Routes>
             </header>
@@ -136,3 +145,4 @@ export default function App() {
     </div>
   );
 }
+

@@ -13,7 +13,8 @@ export const PAGE_NAMES = [
   // { NAME: "Login", ROUTE: "/login" },
   { NAME: "Account", ROUTE: "/UsersList" },
   { NAME: "Feedback", ROUTE: "/Feedback" },
-  { NAME: "Product", ROUTE: "/Product" }
+  { NAME: "Product", ROUTE: "/Product" },
+  { NAME: "Conversations", ROUTE: "/Conversations" },
 ];
 
 export const COLORS = {
