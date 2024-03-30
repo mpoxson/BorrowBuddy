@@ -133,14 +133,14 @@ const Product = () => {
         rental_damage_text: "",
       };
 
-      let updates = {
-        product_id: productId,
-        product_is_rented: "yes",
-      };
+      let updates = product;
+      updates.product_is_rented = "yes";
+
+      console.log(updates);
 
       //Check if is rented is still no first
       //set is rented before making product rental
-      //await axios.put(`http://localhost:3001/products/${productId}`, updates);
+      await axios.put(`http://localhost:3001/products/${productId}`, updates);
       await axios.post("http://localhost:3001/product_rentals", data);
       window.location.reload();
     } catch (error) {

@@ -60,7 +60,7 @@ const Home = () => {
 
       if (data) {
         data.forEach(async (element) => {
-          let prod = element.rental_id;
+          let prod = element.product_id;
           let newData2 = [];
           try {
             const response2 = await axios.get(
