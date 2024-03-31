@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from "@mui/material";
 
-const ManageRentals = (props) => {
+const ManageRentals = (rental, product) => {
   const style = {
     position: "absolute",
     top: "50%",
@@ -23,6 +23,25 @@ const ManageRentals = (props) => {
   };
 
   //Hand submit: update below, update return time ans is return, refresh whole page
+  const handleReserve = async () => {
+    try {
+      let today = new Date();
+      let updates = product;
+      updates.product_is_rented = "no";
+
+      console.log(updates);
+
+      //Check if is rented is still no first
+      //set is rented before making product rental
+      await axios.put(`http://localhost:3001/products/${productId}`, updates);
+      await axios.put("http://localhost:3001/product_rentals", data);
+      alert(product.product_is_rented.toLowerCase());
+      window.location.reload();
+    } catch (error) {
+      // Error handling code remains the same
+      console.log("errored out: " + error);
+    }
+  };
 
   return (
     <Box sx={style}>

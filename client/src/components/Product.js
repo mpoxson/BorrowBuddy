@@ -20,12 +20,11 @@ const Product = () => {
   const [product, setProduct] = useState(null);
   const [rental, setRental] = useState(null);
   const [user, setUser] = useState(null);
-  const [refreshData, setRefreshData] = useState(false);
+  const [refreshData, setRefreshData] = useState(true);
   const [imageAva, setImageAva] = useState([]);
   const [edit, setEdit] = useState(true);
   const imageAvaRef = ref(storage, "userAvatars/");
   let { productId } = useParams();
-
   const [error, setError] = useState("");
 
   const [open, setOpen] = React.useState(false);
@@ -315,6 +314,8 @@ const Product = () => {
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
+            rental={rental}
+            product={product}
           >
             <ManageRentals porps={rental[0]} />
           </Modal>

@@ -45,7 +45,7 @@ function Comments(props) {
       }}
     >
       <div style={{ width: "54%", margin: "3px" }}>
-        <CommentGroup size="medium">
+        <CommentGroup>
           <Comment>
             <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/matt.jpg" />
             <CommentContent>

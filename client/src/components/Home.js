@@ -59,9 +59,10 @@ const Home = () => {
       }
 
       if (data) {
+        let newData2 = [];
         data.forEach(async (element) => {
           let prod = element.product_id;
-          let newData2 = [];
+
           try {
             const response2 = await axios.get(
               `http://localhost:3001/products/${prod}`
