@@ -20,10 +20,10 @@ const Product = () => {
   const [product, setProduct] = useState(null);
   const [rental, setRental] = useState(null);
   const [user, setUser] = useState(null);
-  const [refreshData, setRefreshData] = useState(false);
+  const [refreshData, setRefreshData] = useState(true);
+  const [imageAva, setImageAva] = useState([]);
   const [edit, setEdit] = useState(true);
   let { productId } = useParams();
-
   const [error, setError] = useState("");
 
   const [open, setOpen] = React.useState(false);
@@ -64,7 +64,11 @@ const Product = () => {
     axios
       .get(`http://localhost:3001/product_images/${productId}`)
       .then((response) => {
-        response.data.forEach(product_images => setImageList((prev) => [...new Set([...prev, product_images.image_location])]))
+        response.data.forEach((product_images) =>
+          setImageList((prev) => [
+            ...new Set([...prev, product_images.image_location]),
+          ])
+        );
       })
       .catch((error) => {
         console.error("Error fetching images:", error);
@@ -113,20 +117,25 @@ const Product = () => {
         rental_damage_text: "",
       };
 
-      let updates = {
-        product_id: productId,
-        product_is_rented: "yes",
-      };
+      let updates = product;
+      updates.product_is_rented = "yes";
+
+      console.log(updates);
 
       //Check if is rented is still no first
       //set is rented before making product rental
-      //await axios.put(`http://localhost:3001/products/${productId}`, updates);
+      await axios.put(`http://localhost:3001/products/${productId}`, updates);
       await axios.post("http://localhost:3001/product_rentals", data);
       window.location.reload();
     } catch (error) {
       // Error handling code remains the same
       console.log("errored out: " + error);
     }
+  };
+
+  let props = {
+    product: product,
+    rental: rental[0],
   };
 
   return (
@@ -158,7 +167,10 @@ const Product = () => {
             <Grid xs={2}>
               <Box sx={{ display: "flex" }}>
                 <Box marginY={"auto"}>
-                  <Avatar src={user.user_profile_picture} aria-label="Profile Pic" />
+                  <Avatar
+                    src={user.user_profile_picture}
+                    aria-label="Profile Pic"
+                  />
                 </Box>
                 <Box marginLeft={"20px"} marginRight={"-20px"} marginY={"auto"}>
                   <Typography>{user.user_name}</Typography>
@@ -296,7 +308,7 @@ const Product = () => {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <ManageRentals porps={rental[0]} />
+            <ManageRentals props={props} />
           </Modal>
         </Box>
         <Box width={"100%"} display={"flex"} justifyContent={"right"}>
