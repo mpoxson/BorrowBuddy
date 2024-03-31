@@ -21,9 +21,7 @@ const Product = () => {
   const [rental, setRental] = useState(null);
   const [user, setUser] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
-  const [imageAva, setImageAva] = useState([]);
   const [edit, setEdit] = useState(true);
-  const imageAvaRef = ref(storage, "userAvatars/");
   let { productId } = useParams();
 
   const [error, setError] = useState("");
@@ -34,9 +32,6 @@ const Product = () => {
 
   //For page displaying images
   const [imageList, setImageList] = useState([]);
-
-  //Reference to test "images" folder
-  const imageListRef = ref(storage, "testImages/");
 
   useEffect(() => {
     axios
@@ -64,32 +59,17 @@ const Product = () => {
         });
     }
   }, [product]);
+  //Create an array of image URLs from the product_images associated with product
   useEffect(() => {
-    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
-    listAll(imageListRef).then((response) => {
-      //To display images, for each file in reference folder:
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          //Update image list as array of image URLs
-          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
-          setImageList((prev) => [...new Set([...prev, url])]);
-        });
+    axios
+      .get(`http://localhost:3001/product_images/${productId}`)
+      .then((response) => {
+        response.data.forEach(product_images => setImageList((prev) => [...new Set([...prev, product_images.image_location])]))
+      })
+      .catch((error) => {
+        console.error("Error fetching images:", error);
       });
-    });
-  }, []);
-  useEffect(() => {
-    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
-    listAll(imageAvaRef).then((response) => {
-      //To display images, for each file in reference folder:
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          //Update image list as array of image URLs
-          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
-          setImageAva((prev) => [...new Set([...prev, url])]);
-        });
-      });
-    });
-  }, []);
+  }, [productId]);
 
   if (!product) {
     return <div>Loading...</div>;
@@ -178,7 +158,7 @@ const Product = () => {
             <Grid xs={2}>
               <Box sx={{ display: "flex" }}>
                 <Box marginY={"auto"}>
-                  <Avatar src={imageAva[0]} aria-label="Profile Pic" />
+                  <Avatar src={user.user_profile_picture} aria-label="Profile Pic" />
                 </Box>
                 <Box marginLeft={"20px"} marginRight={"-20px"} marginY={"auto"}>
                   <Typography>{user.user_name}</Typography>
