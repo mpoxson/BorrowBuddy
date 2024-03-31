@@ -20,50 +20,31 @@ function Card(props) {
   const [userName, setUserName] = useState("");
 
   //For page displaying images
-  const [imageAva, setImageAva] = useState([]);
   const [imageSingle, setImageSingle] = useState([]);
 
-  //Reference to test "images" folder
-  const imageAvaRef = ref(storage, "userAvatars/");
-  const imageSingleRef = ref(storage, "testImages/");
 
   //invoke database user_name in each card title
   useEffect(() => {
     axios
       .get(`http://localhost:3001/users/${props.props.owner_id}`)
       .then((response) => {
-        setUserName(response.data.userName);
+        setUserName(response.data);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
   }, [props.props.owner_id]);
+
   useEffect(() => {
-    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
-    listAll(imageAvaRef).then((response) => {
-      //To display images, for each file in reference folder:
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          //Update image list as array of image URLs
-          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
-          setImageAva((prev) => [...new Set([...prev, url])]);
-        });
+    axios
+      .get(`http://localhost:3001/product_images/min/${props.props.product_id}`)
+      .then((response) => {
+        setImageSingle(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching images:", error);
       });
-    });
-  }, []);
-  useEffect(() => {
-    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
-    listAll(imageSingleRef).then((response) => {
-      //To display images, for each file in reference folder:
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          //Update image list as array of image URLs
-          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
-          setImageSingle((prev) => [...new Set([...prev, url])]);
-        });
-      });
-    });
-  }, []);
+  }, [props.props.product_id]);
 
   const handleSave = (event) => {
     if (saved === null || saved === false) setSaved(true);
@@ -99,7 +80,7 @@ function Card(props) {
             color: COLORS.SECONDARY,
           }}
           //handle images
-          avatar={<Avatar src={imageAva[0]} aria-label="Profile Pic" />}
+          avatar={<Avatar src={userName.user_profile_picture} aria-label="Profile Pic" />}
           action={
             <Tooltip title="Save" disableInteractive arrow>
               <IconButton aria-label="Save" onClick={handleSave}>
@@ -113,7 +94,7 @@ function Card(props) {
           }
           title={
             <Typography color={COLORS.SECONDARY} variant="h6">
-              {props.props.rentee_username}
+              {userName.user_name}
             </Typography>
           }
           subheader={
@@ -127,7 +108,7 @@ function Card(props) {
           <CardMedia
             component="img"
             height="200"
-            image={imageSingle[0]}
+            image={imageSingle.image_location}
             alt="green iguana"
           />
           <CardContent sx={{ color: COLORS.PRIMARY }}>
@@ -145,7 +126,7 @@ function Card(props) {
             </Typography>
             <Typography></Typography>
             <Typography variant="caption" sx={{ color: COLORS.PRIMARY }}>
-              Location: Detroit
+              Location: {userName.user_city}, {userName.user_state}
             </Typography>
           </CardContent>
         </CardActionArea>
