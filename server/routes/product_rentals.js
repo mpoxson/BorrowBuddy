@@ -107,4 +107,42 @@ router.post("/", async (req,res)=>{
 })//This is for frontend 
 
 
-module.exports=router;
+router.put("/:rentalId", async (req, res) => {
+  const rentalId = req.params.rentalId;
+
+  try {
+    const rental = await product_rentals.findByPk(rentalId);
+    if (!rental) {
+      return res.status(404).json({ message: "rental product not found" });
+    }
+
+    // Update product fields based on the request body
+    await rental.update(req.body);
+
+    res.json({ message: "rental product updated successfully" });
+  } catch (error) {
+    console.error("Error updating rental product:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.delete("/:rentalId", async (req, res) => {
+  const rentalId = req.params.rentalId;
+
+  try {
+    const rental = await product_rentals.findByPk(rentalId);
+    if (!rental) {
+      return res.status(404).json({ message: "rental product not found" });
+    }
+
+    // Delete the product
+    await rental.destroy();
+
+    res.json({ message: "rental product deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting rental product:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+module.exports = router;
+
