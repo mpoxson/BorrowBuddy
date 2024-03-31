@@ -23,11 +23,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         save_time: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: false,
+            defaultValue: DataTypes.NOW
         },
         save_status: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: false
         }
     }, 
     {
