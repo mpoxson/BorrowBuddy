@@ -7,17 +7,17 @@ function AddProduct(props) {
   const[product_price,setProductPrice] = useState('');
   const[product_category,setProductCategory] = useState('');
 
-  handleOnSubmit(e) {
+  handleOnSubmit = (e) =>{
     e.preventDefault()
 
-      const data ={
-        product_name:
-        product_desciption:
-        product_price:
-        product_category:
+      const data = {
+        product_name:'',
+        product_desciption:'',
+        product_price:'',
+        product_category:''
 
       }
-    axios.post('http://localhost:3001/',data)
+    axios.post('http://localhost:3001/products', data)
       .then((response)=> {
         console.log(response.data)
       }).catch((error)=>{
