@@ -130,6 +130,11 @@ function Card(props) {
             </Typography>
           </CardContent>
         </CardActionArea>
+        {props.props.product_is_rented.toLowerCase() === "yes" ? (
+          <Typography color={COLORS.PRIMARY}>NOT AVAILABLE</Typography>
+        ) : (
+          <Typography color={COLORS.ACCENT}>AVAILABLE NOW</Typography>
+        )}
       </MCard>
     </Paper>
   );

@@ -69,7 +69,8 @@ Once the server is running, you can interact with the API endpoints to manage us
 # Material UI:
 
 - cd ../BorrowBuddy/client
-- npm install @mui/material @emotion/react @emotion/styled
+- npm install @mui/material @emotion/react @emotion/styled @mui/x-date-pickers
+- npm install dayjs
 - npm install @mui/joy
 
 # Swiper
