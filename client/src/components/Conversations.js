@@ -1,42 +1,48 @@
-// Conversations.js
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
-
-const sampleMessages = [
-  {
-    id: 1,
-    recipient: 'John Doe',
-    product: 'Sample Product 1',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    timestamp: '2024-03-27 10:00:00'
-  },
-  {
-    id: 2,
-    recipient: 'Jane Smith',
-    product: 'Sample Product 2',
-    text: 'Nulla facilisi. Sed ornare nisl id lectus convallis, quis faucibus justo bibendum.',
-    timestamp: '2024-03-27 09:30:00'
-  },
-  // Add more sample messages as needed
-];
+import axios from 'axios'; // Import axios
 
 const Conversations = () => {
+  const [user, setUser] = useState(null);
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        if (user) { // Ensure user is not null before making the request
+          const response = await axios.get(`http://localhost:3001/Conversations/user/${user.user_id}`);
+          setMessages(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    };
+
+    fetchMessages();
+  }, [user]); // Include user in the dependency array
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <List>
-      {sampleMessages.map(message => (
-        <ListItem key={message.id} button component={Link} to={`/Messages/${message.id}`}>
+      {messages.map((message, index) => (
+        <ListItem button component={Link} to={`/Messages/${message.ConversationID}`} key={index}>
           <ListItemAvatar>
-            <Avatar alt={message.recipient} src={`/profile_pics/${message.recipient}.jpg`} />
+            <Avatar>{message.user_id1 === user.user_id ? message.user_id2 : message.user_id1}</Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={message.product}
-            secondary={`${message.text.substring(0, 30)}...`}
-            secondaryTypographyProps={{ noWrap: true }}
-          />
-          <ListItemText
-            primaryTypographyProps={{ component: 'div' }}
-            primary={new Date(message.timestamp).toLocaleString()}
+            primary={`User: ${message.user_id1 === user.user_id ? message.user_id2 : message.user_id1}`}
+            secondary={`Last Message Time: ${message.LastMessageTime}`}
           />
         </ListItem>
       ))}
