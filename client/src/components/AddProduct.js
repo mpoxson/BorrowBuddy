@@ -13,8 +13,11 @@ function AddProduct(props) {
     useState("");
   const [product_available_end_time, setproduct_available_end_time] =
     useState("");
+  const [product, setProduct] = useState(null);
 
   let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
+
+  const [responses, setResponses] = useState(null);
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
@@ -35,12 +38,45 @@ function AddProduct(props) {
       .post("http://localhost:3001/products", data)
       .then((response) => {
         console.log(response.data);
+        responses = setResponses(response);
       })
       .catch((error) => {
         console.log(error);
       });
-
   };
+
+  useEffect(() => {
+    if (responses != null) {
+      axios
+        .get(`http://localhost:3001/products/owner/${curr_user}`)
+        .then((response) => {
+          console.log(response.data);
+          setProduct(response.data);
+        });
+    }
+  }, [responses]);
+
+  useEffect(() => {
+    if (product != null) {
+      const imageData = {
+        product_id: product.product_id,
+        image_order: 1,
+        image_location:
+          "https://firebasestorage.googleapis.com/v0/b/borrowbuddy-794c1.appspot.com/o/testImages%2FSqueakySam.png0f73c357-0008-432a-a759-f84b21045e89?alt=media&token=60370d64-995d-49f2-bab4-136817a6e668",
+      };
+
+      axios
+        .post(`http://localhost:3001/product_images`, imageData)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      alert("Posted");
+    }
+  }, [product]);
+
   return (
     <>
       <div className="box-border relative shrink-0 mx-auto mt-5 mb-36 h-auto">
