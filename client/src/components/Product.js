@@ -15,6 +15,10 @@ import ManageRentals from "./ManageRentals";
 import { storage } from "../firebase/config";
 import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -25,6 +29,10 @@ const Product = () => {
   const [edit, setEdit] = useState(true);
   let { productId } = useParams();
   const [error, setError] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setcategory] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -57,6 +65,10 @@ const Product = () => {
           console.log(response.data);
           setUser(response.data);
         });
+      setDescription(product.product_description);
+      setStart(product.product_available_start_time.slice(0, 10));
+      setEnd(product.product_available_end_time.slice(0, 10));
+      setcategory(product.product_category);
     }
   }, [product]);
   //Create an array of image URLs from the product_images associated with product
@@ -136,6 +148,27 @@ const Product = () => {
   let props = {
     product: product,
     rental: rental[0],
+  };
+
+  const handleEdits = async () => {
+    try {
+      let updates = product;
+
+      updates.product_description = description;
+      updates.product_category = category;
+      updates.product_available_start_time = start;
+      updates.product_available_end_time = end;
+
+      console.log(updates);
+
+      //Check if is rented is still no first
+      //set is rented before making product rental
+      await axios.put(`http://localhost:3001/products/${productId}`, updates);
+      window.location.reload();
+    } catch (error) {
+      // Error handling code remains the same
+      console.log("errored out: " + error);
+    }
   };
 
   return (
@@ -254,7 +287,10 @@ const Product = () => {
               fullWidth
               multiline
               minRows={6}
-              defaultValue={product.product_description}
+              defaultValue={description}
+              onChange={(event) => {
+                setDescription(event.target.value);
+              }}
             />
           </Box>
           <Box
@@ -269,25 +305,33 @@ const Product = () => {
                 readOnly: edit,
               }}
               label="Category: "
-              defaultValue={product.product_category}
-            />
-            <TextField
-              fullWidth
-              InputProps={{
-                readOnly: edit,
+              defaultValue={category}
+              onChange={(event) => {
+                setcategory(event.target.value);
               }}
-              label="Start: "
-              defaultValue="01/02/23"
-              sx={{ marginY: "7px" }}
             />
-            <TextField
-              fullWidth
-              InputProps={{
-                readOnly: edit,
-              }}
-              label="End: "
-              defaultValue="01/02/24"
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                sx={{ width: "100%", marginY: "7px" }}
+                label="Start:"
+                readOnly={edit}
+                defaultValue={dayjs(start)}
+                onChange={(newValue) => {
+                  setStart(newValue.toDate());
+                }}
+              />
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                sx={{ width: "100%", marginY: "7px" }}
+                label="Start:"
+                readOnly={edit}
+                defaultValue={dayjs(end)}
+                onChange={(newValue) => {
+                  setEnd(newValue.toDate());
+                }}
+              />
+            </LocalizationProvider>
           </Box>
         </Box>
       </Box>
@@ -310,6 +354,13 @@ const Product = () => {
           >
             <ManageRentals props={props} />
           </Modal>
+          {edit == false ? (
+            <Button variant="contained" onClick={handleEdits}>
+              Submit Changes
+            </Button>
+          ) : (
+            ""
+          )}
         </Box>
         <Box width={"100%"} display={"flex"} justifyContent={"right"}>
           {rental[0] || product.owner_id == curr_user ? (
