@@ -48,20 +48,51 @@ Once the server is running, you can interact with the API endpoints to manage us
 - GET /api/product_rentals: Retrieve a list of all product rentals.
 - GET /api/comments: Retrieve a list of all comments.
 - GET /api/ratings: Retrieve a list of all ratings.
+- GET /api/product_saves: Retrieve a saved list of all products.
+- GET /api/product_images: Retrieve a list of all product images.
+-
 - POST /api/users: Add a new user to the database.
 - POST /api/products: Add a new product to the database.
 - POST /api/product_rentals: Add a new product rental to the database.
 - POST /api/comments: Add a new comment to the database.
 - POST /api/ratings: Add a new rating to the database.
+- POST /api/product_saves: Add a new saved list of all products to the database.
+- POST /api/product_images: Add a new product images to the database.
 
 ### Client/frontend (React.js)
 
-
 - cd ../BorrowBuddy/client
 - npm install react
+- npm install bcryptjs
 - npm start
 
+# Material UI:
+
+- cd ../BorrowBuddy/client
+- npm install @mui/material @emotion/react @emotion/styled
+- npm install @mui/joy
+
+# Swiper
+
+- cd ../BorrowBuddy/client
+- npm install swiper
+
+# Semantic UI:
+
+- cd ../BorrowBuddy/client
+- npm install semantic-ui-react
+- npm install
+
+# Cloud Support
+
+- cd ../BorrowBuddy/server
+- npm install mssql
+- cd ../BorrowBuddy/client
+- npm install firebase
+- npm install uuid
+
 ## Usage
+
 - cd `../BorrowBuddy/client`
 - npm install react-scripts
 - npm install react-router-dom formik yup axios
@@ -75,10 +106,10 @@ We will use `cors` middleware to handle cross-domain(port 3000 from frontend and
 
 When Both of them successfull run,
 you can go these four page in frontend
+
 - `http://localhost:3000/UsersList` (This page is for testing, you can see the data directly and may be deleted in the future)
 - `http://localhost:3000/login`
 - `http://localhost:3000/register`
 - `http://localhost:3000/home`
 
-please add more page in `../BorrowBuddy/client/src/components/...` 
-
+please add more page in `../BorrowBuddy/client/src/components/...`

@@ -3,7 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; 
-import '../css/RegisterStyles.css'; 
+import '../css/RegisterStyles.css';
+import bcrypt from 'bcryptjs'; 
 
 const Register = () => {
   const [error, setError] = useState('');
@@ -26,13 +27,17 @@ const Register = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await axios.post('http://localhost:3001/users', values);
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(values.user_password, 10); // 10 is the salt rounds
+
+      // Replace the plain text password with hashed password
+      const data = { ...values, user_password: hashedPassword };
+
+      await axios.post('http://localhost:3001/users', data);
       navigate('/login'); // Redirect to login page after successful registration
     } catch (error) {
-      console.error('Registration failed:', error.message);
-      setError(error.message);
+      // Error handling code remains the same
     }
-    setSubmitting(false);
   };
 
   return (
@@ -48,7 +53,7 @@ const Register = () => {
           user_email: '',
           user_phone: '',
           user_profile: '',
-          user_profile_picture: '',
+          user_profile_picture: 'https://firebasestorage.googleapis.com/v0/b/borrowbuddy-794c1.appspot.com/o/userAvatars%2Fdefault.png?alt=media&token=6d92169e-78b8-4be5-8493-b5459ae0423e',
           user_password: '',
         }}
         validationSchema={validationSchema}
@@ -97,7 +102,8 @@ const Register = () => {
               <ErrorMessage name="user_profile" component="div" className="error-message" />
             </div>
             {/* this profile_picture may need submit a image, we may need change the type*/}
-            <div className="form-group">
+            {/*Current solution is set default value to default.jpg in firebase and hide form element, then if user wants to change pic, they can edit it later*/}
+            <div className="form-group" hidden>
               <label htmlFor="user_profile_picture">Profile Picture:</label>
               <Field type="text" name="user_profile_picture" />
               <ErrorMessage name="user_profile_picture" component="div" className="error-message" />

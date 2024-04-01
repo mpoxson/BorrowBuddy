@@ -1,99 +1,160 @@
-import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; 
-import '../css/LoginStyles.css'; 
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { COLORS as c, PAGE_ROUTES } from "../constants/enums";
+import bcrypt from 'bcryptjs';
 
-const Login = () => {
-  const [error, setError] = useState('');
-  const navigate = useNavigate(); 
+function Copyright(props) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
+      <Link color="inherit" href="#">
+        BorrowBuddy
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
 
-  const validationSchema = Yup.object().shape({
-    user_email: Yup.string()
-      .email('Invalid email address')
-      .required('Email is required'),
-    user_password: Yup.string()
-      .required('Password is required')
-      .min(6, 'Password must be at least 6 characters'),
-  });
+export default function Login(props) {
+  const [errorM, setError] = useState("");
+  const navigate = useNavigate();
+
   const authenticateUser = async (email, password) => {
     try {
-      const response = await axios.get('http://localhost:3001/users');
+      const response = await axios.get("http://localhost:3001/users");
       const users = response.data;
-      const user = users.find(user => user.user_email === email);
-      console.log(users);
+      const user = users.find((user) => user.user_email === email);
+      console.log(users);// test; we must comment/delete it to aviod other user see username and passward
       if (user) {
-        if (user.user_password === password) {
+        const passwordMatch = await bcrypt.compare(password, user.user_password);
+        if (passwordMatch) {
           return user;
         } else {
-          throw new Error('Invalid email or password');
+          throw new Error("Invalid email or password");
         }
       } else {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
     } catch (error) {
-      console.error('Authentication failed:', error.message);
-      return null;
+      // Error handling code remains the same
     }
   };
-  
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      email: data.get("email"),
+      password: data.get("password"),
+    });
     try {
-      const user = await authenticateUser(values.user_email, values.user_password);
-      console.log('Login successful:', user);
+      const user = await authenticateUser(
+        data.get("email"),
+        data.get("password")
+      );
       if (user) {
-        navigate('/home');
-      } else {
-        setError('Invalid email or password');
+        console.log("Login successful:", user);
+        localStorage.setItem("user", JSON.stringify(user));//1. Store user data after successful login, 2. used in UserAccountInfo.js
+        props.onLogin();
+        navigate(PAGE_ROUTES.HOME);
       }
     } catch (error) {
-      console.error('Login failed:', error.message);
+      console.error("Login failed:", error.message);
       setError(error.message);
     }
-    setSubmitting(false);
   };
-  
 
   return (
-    <div className="login-container">
-      <h1 className="login-title">Login</h1>
-      <Formik
-        initialValues={{
-          user_email: '',
-          user_password: '',
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
       >
-        {({ isSubmitting }) => (
-          <Form>
-            <div className="form-group">
-              <label htmlFor="user_email">Email:</label>
-              <Field type="email" name="user_email" />
-              <ErrorMessage name="user_email" component="div" className="error-message" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="user_password">Password:</label>
-              <Field type="password" name="user_password" />
-              <ErrorMessage name="user_password" component="div" className="error-message" />
-            </div>
-            {error && <div className="error-message">{error}</div>}
-            
-            <div className="create-account-link">
-              <span>No account? <Link to="/register">Create one</Link></span>
-            </div>
-
-            <button type="submit" disabled={isSubmitting} className="submit-button">
-              Log in
-            </button>
-            
-          </Form>
-        )}
-      </Formik>
-    </div>
+        <Avatar sx={{ m: 1, bgcolor: c.PRIMARY, color: c.ACCENT }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            error={errorM === "" ? false : true}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            error={errorM === "" ? false : true}
+            helperText={errorM === "" ? "" : "Invalid username or password"}
+          />
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Sign In
+          </Button>
+          <Grid container>
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Forgot password?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link
+                href={PAGE_ROUTES.REGISTER}
+                variant="body2"
+                color={c.ACCENT}
+              >
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Grid>
+        </Box> 
+      </Box>
+      <Copyright sx={{ mt: 8, mb: 4 }} />
+    </Container>
   );
-};
-
-export default Login;
+}

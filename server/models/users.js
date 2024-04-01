@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     
-    const Users = sequelize.define("users", {
+    const users = sequelize.define("users", {
         user_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         user_email: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true, // Add unique constraint to make ensure email is unique 
         },
         user_phone: {
             type: DataTypes.STRING,
@@ -53,5 +54,13 @@ module.exports = (sequelize, DataTypes) => {
         updatedAt: false,
     });
 
-    return Users;
+     // Add hook to check if email is unique before we creat a user info.
+    users.beforeCreate(async (user, options) => {
+        const existingUser = await users.findOne({ where: { user_email: user.user_email } });
+        if (existingUser) {
+            throw new Error('Email address is already registered');
+        }
+    });
+
+    return users;
 };
