@@ -24,6 +24,7 @@ import Footers from "./components/Footer";
 import Product from "./components/Product";
 import Conversations from "./components/Conversations";
 import Messages from "./components/Messages";
+import AddProduct from "./components/AddProduct";
 
 const theme = createTheme({
   palette: {
@@ -56,7 +57,6 @@ export default function App() {
     setIsAuthenticated(true);
     localStorage.setItem("isAuthenticated", JSON.stringify(true)); //The purpose of localStorage is to keep it true when login
     setDisableLoginButton(true); // Disable login button after successful login
-  
   };
 
   const handleLogout = () => {
@@ -76,7 +76,12 @@ export default function App() {
             minHeight: "100vh",
           }}
         >
-          <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} isLoggedIn={isAuthenticated} disableLoginButton={disableLoginButton}/>
+          <Navbar
+            isAuthenticated={isAuthenticated}
+            onLogout={handleLogout}
+            isLoggedIn={isAuthenticated}
+            disableLoginButton={disableLoginButton}
+          />
           <Router>
             <header className="App-header">
               <Routes>
@@ -86,7 +91,10 @@ export default function App() {
                   element={<Login onLogin={handleLogin} />}
                 />
                 <Route path="/register" element={<Register />} />
-                <Route path="/" element={ isAuthenticated ? <Home /> : <Login />} />
+                <Route
+                  path="/"
+                  element={isAuthenticated ? <Home /> : <Login />}
+                />
 
                 {/* These routes are protected page, add more below... */}
                 <Route
@@ -105,7 +113,11 @@ export default function App() {
                   <Route path="/imageTest" element={<ImageTest />} />
                   <Route path="/Product" element={<Product />} />
                   <Route path="/Conversations" element={<Conversations />} />
-                  <Route path="/Messages/:conversationID" element={<Messages />} />
+                  <Route
+                    path="/Messages/:conversationID"
+                    element={<Messages />}
+                  />
+                  <Route path="/AddProduct" element={<AddProduct />} />
                 </Route>
               </Routes>
             </header>
@@ -145,4 +157,3 @@ export default function App() {
     </div>
   );
 }
-
