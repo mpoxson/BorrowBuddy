@@ -7,7 +7,7 @@ function AddProduct(props) {
   const[product_price,setProductPrice] = useState('');
   const[product_category,setProductCategory] = useState('');
 
-  handleOnSubmit(e); {
+  handleOnSubmit = (e) =>{
     e.preventDefault()
 
       const data = {
