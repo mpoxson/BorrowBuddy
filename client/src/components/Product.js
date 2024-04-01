@@ -277,7 +277,7 @@ const Product = () => {
                 readOnly: edit,
               }}
               label="Start: "
-              defaultValue="01/02/23"
+              defaultValue={product.product_available_start_time.slice(0, 10)}
               sx={{ marginY: "7px" }}
             />
             <TextField
@@ -286,7 +286,7 @@ const Product = () => {
                 readOnly: edit,
               }}
               label="End: "
-              defaultValue="01/02/24"
+              defaultValue={product.product_available_end_time.slice(0, 10)}
             />
           </Box>
         </Box>
