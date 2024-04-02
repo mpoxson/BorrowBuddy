@@ -43,11 +43,22 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
+// router.post("/", async (req, res) => {
+//   const product_save = req.body;
+//   await product_saves.create(product_save);
+//   res.json(product_save);
+// }); //This is for frontend
+
 router.post("/", async (req, res) => {
-  const product_save = req.body;
-  await product_saves.create(product_save);
-  res.json(product_save);
-}); //This is for frontend
+  try {
+    const product_save = req.body;
+    const save = await product_saves.create(product_save);
+    res.json({ ...save.toJSON(), message: "Save created successfully" });
+  } catch (error) {
+    console.error("Error creating save:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 //test successfully, we may never use update route
 router.put("/:saveId", async (req, res) => {
