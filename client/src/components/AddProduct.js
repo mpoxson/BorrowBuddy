@@ -17,8 +17,7 @@ function AddProduct(props) {
     useState("");
   const [product, setProduct] = useState(null);
   const [imageUpload, setImageUpload] = useState(null);
-  const [urlImage, setUrlImage] = useState("https://firebasestorage.googleapis.com/v0/b/borrowbuddy-794c1.appspot.com/o/testImages%2FSqueakySam.png0f73c357-0008-432a-a759-f84b21045e89?alt=media&token=60370d64-995d-49f2-bab4-136817a6e668");
-
+  const [urlImage, setUrlImage] = useState(null);
 
   let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
@@ -66,21 +65,21 @@ function AddProduct(props) {
     if (imageUpload != null && product != null) {
       //console.log("made it in");
       //Create reference for where to store image
-      const imageRef = ref(storage, `products/${product.product_id}/1.png`)
+      const imageRef = ref(storage, `products/${product.product_id}/1.png`);
       /*Used to upload an image to Firebase.
         Note uploaded images are public access */
       uploadBytes(imageRef, imageUpload).then((snapshot) => {
-          //alert("Image Uploaded");
-          getDownloadURL(snapshot.ref).then((url) => {
-                  setUrlImage(url);
-                  //console.log(urlImage);       
-          })
+        //alert("Image Uploaded");
+        getDownloadURL(snapshot.ref).then((url) => {
+          setUrlImage(url);
+          //console.log(urlImage);
+        });
       });
-    };
+    }
   }, [imageUpload, urlImage, product]);
 
   useEffect(() => {
-    if (product != null) {
+    if (product != null && urlImage != null) {
       const imageData = {
         product_id: product.product_id,
         image_order: 1,
@@ -96,6 +95,7 @@ function AddProduct(props) {
           console.log(error);
         });
       alert("Posted");
+      window.location.reload();
     }
   }, [product, urlImage]);
 
@@ -143,7 +143,10 @@ function AddProduct(props) {
               placeholder="Product Image"
               name="ProductImage"
               className="box-border flex relative flex-col shrink-0 p-2.5 mt-5 mb-11 rounded border border-solid border-stone-300"
-              onChange={(event) => {setImageUpload(event.target.files[0]);}}
+              onChange={(event) => {
+                setImageUpload(event.target.files[0]);
+              }}
+              required={true}
             />
             <FormInput
               type="text"
