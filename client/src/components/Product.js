@@ -15,18 +15,24 @@ import ManageRentals from "./ManageRentals";
 import { storage } from "../firebase/config";
 import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
   const [rental, setRental] = useState(null);
   const [user, setUser] = useState(null);
-  const [refreshData, setRefreshData] = useState(false);
+  const [refreshData, setRefreshData] = useState(true);
   const [imageAva, setImageAva] = useState([]);
   const [edit, setEdit] = useState(true);
-  const imageAvaRef = ref(storage, "userAvatars/");
   let { productId } = useParams();
-
   const [error, setError] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setcategory] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -34,9 +40,6 @@ const Product = () => {
 
   //For page displaying images
   const [imageList, setImageList] = useState([]);
-
-  //Reference to test "images" folder
-  const imageListRef = ref(storage, "testImages/");
 
   useEffect(() => {
     axios
@@ -62,34 +65,27 @@ const Product = () => {
           console.log(response.data);
           setUser(response.data);
         });
+      setDescription(product.product_description);
+      setStart(product.product_available_start_time.slice(0, 10));
+      setEnd(product.product_available_end_time.slice(0, 10));
+      setcategory(product.product_category);
     }
   }, [product]);
+  //Create an array of image URLs from the product_images associated with product
   useEffect(() => {
-    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
-    listAll(imageListRef).then((response) => {
-      //To display images, for each file in reference folder:
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          //Update image list as array of image URLs
-          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
-          setImageList((prev) => [...new Set([...prev, url])]);
-        });
+    axios
+      .get(`http://localhost:3001/product_images/${productId}`)
+      .then((response) => {
+        response.data.forEach((product_images) =>
+          setImageList((prev) => [
+            ...new Set([...prev, product_images.image_location]),
+          ])
+        );
+      })
+      .catch((error) => {
+        console.error("Error fetching images:", error);
       });
-    });
-  }, []);
-  useEffect(() => {
-    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
-    listAll(imageAvaRef).then((response) => {
-      //To display images, for each file in reference folder:
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          //Update image list as array of image URLs
-          //uses "new Set()" to prevent duplicates caused by useEffect with listAll
-          setImageAva((prev) => [...new Set([...prev, url])]);
-        });
-      });
-    });
-  }, []);
+  }, [productId]);
 
   if (!product) {
     return <div>Loading...</div>;
@@ -133,15 +129,41 @@ const Product = () => {
         rental_damage_text: "",
       };
 
-      let updates = {
-        product_id: productId,
-        product_is_rented: "yes",
-      };
+      let updates = product;
+      updates.product_is_rented = "yes";
+
+      console.log(updates);
 
       //Check if is rented is still no first
       //set is rented before making product rental
-      //await axios.put(`http://localhost:3001/products/${productId}`, updates);
+      await axios.put(`http://localhost:3001/products/${productId}`, updates);
       await axios.post("http://localhost:3001/product_rentals", data);
+      window.location.reload();
+    } catch (error) {
+      // Error handling code remains the same
+      console.log("errored out: " + error);
+    }
+  };
+
+  let props = {
+    product: product,
+    rental: rental[0],
+  };
+
+  const handleEdits = async () => {
+    try {
+      let updates = product;
+
+      updates.product_description = description;
+      updates.product_category = category;
+      updates.product_available_start_time = start;
+      updates.product_available_end_time = end;
+
+      console.log(updates);
+
+      //Check if is rented is still no first
+      //set is rented before making product rental
+      await axios.put(`http://localhost:3001/products/${productId}`, updates);
       window.location.reload();
     } catch (error) {
       // Error handling code remains the same
@@ -178,7 +200,10 @@ const Product = () => {
             <Grid xs={2}>
               <Box sx={{ display: "flex" }}>
                 <Box marginY={"auto"}>
-                  <Avatar src={imageAva[0]} aria-label="Profile Pic" />
+                  <Avatar
+                    src={user.user_profile_picture}
+                    aria-label="Profile Pic"
+                  />
                 </Box>
                 <Box marginLeft={"20px"} marginRight={"-20px"} marginY={"auto"}>
                   <Typography>{user.user_name}</Typography>
@@ -262,7 +287,10 @@ const Product = () => {
               fullWidth
               multiline
               minRows={6}
-              defaultValue={product.product_description}
+              defaultValue={description}
+              onChange={(event) => {
+                setDescription(event.target.value);
+              }}
             />
           </Box>
           <Box
@@ -277,25 +305,33 @@ const Product = () => {
                 readOnly: edit,
               }}
               label="Category: "
-              defaultValue={product.product_category}
-            />
-            <TextField
-              fullWidth
-              InputProps={{
-                readOnly: edit,
+              defaultValue={category}
+              onChange={(event) => {
+                setcategory(event.target.value);
               }}
-              label="Start: "
-              defaultValue="01/02/23"
-              sx={{ marginY: "7px" }}
             />
-            <TextField
-              fullWidth
-              InputProps={{
-                readOnly: edit,
-              }}
-              label="End: "
-              defaultValue="01/02/24"
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                sx={{ width: "100%", marginY: "7px" }}
+                label="Start:"
+                readOnly={edit}
+                defaultValue={dayjs(start)}
+                onChange={(newValue) => {
+                  setStart(newValue.toDate());
+                }}
+              />
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                sx={{ width: "100%", marginY: "7px" }}
+                label="Start:"
+                readOnly={edit}
+                defaultValue={dayjs(end)}
+                onChange={(newValue) => {
+                  setEnd(newValue.toDate());
+                }}
+              />
+            </LocalizationProvider>
           </Box>
         </Box>
       </Box>
@@ -316,8 +352,15 @@ const Product = () => {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <ManageRentals porps={rental[0]} />
+            <ManageRentals props={props} />
           </Modal>
+          {edit == false ? (
+            <Button variant="contained" onClick={handleEdits}>
+              Submit Changes
+            </Button>
+          ) : (
+            ""
+          )}
         </Box>
         <Box width={"100%"} display={"flex"} justifyContent={"right"}>
           {rental[0] || product.owner_id == curr_user ? (
