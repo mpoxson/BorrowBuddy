@@ -1,29 +1,104 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+//import { FormInput } from "semantic-ui-react";
+//import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { FormInput, Form, FormSelect, Button } from "semantic-ui-react";
+import { storage } from "../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function AddProduct(props) {
-  const[product_name,setProductName] = useState('');
-  const[product_desciption,setProductDescription] = useState('');
-  const[product_price,setProductPrice] = useState('');
-  const[product_category,setProductCategory] = useState('');
+  const [product_name, setProductName] = useState("");
+  const [product_desciption, setProductDescription] = useState("");
+  const [product_price, setProductPrice] = useState("");
+  const [product_category, setProductCategory] = useState("");
+  const [product_available_start_time, setproduct_available_start_time] =
+    useState("");
+  const [product_available_end_time, setproduct_available_end_time] =
+    useState("");
+  const [product, setProduct] = useState(null);
+  const [imageUpload, setImageUpload] = useState(null);
+  const [urlImage, setUrlImage] = useState(null);
 
-  handleOnSubmit = (e) =>{
-    e.preventDefault()
+  let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
-      const data = {
-        product_name:'',
-        product_desciption:'',
-        product_price:'',
-        product_category:''
+  const [responses, setResponses] = useState(null);
 
-      }
-    axios.post('http://localhost:3001/products', data)
-      .then((response)=> {
-        console.log(response.data)
-      }).catch((error)=>{
-        console.log(error)
+  const handleOnSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      product_name: product_name,
+      product_description: product_desciption,
+      product_price: product_price,
+      product_category: product_category,
+      product_available_start_time: Date.parse(product_available_start_time),
+      product_available_end_time: Date.parse(product_available_end_time),
+      owner_id: curr_user,
+      product_is_rented: "no",
+      rentee_id: null,
+    };
+
+    axios
+      .post("http://localhost:3001/products", data)
+      .then((response) => {
+        console.log(response.data);
+        responses = setResponses(response);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-  }
+  };
+
+  useEffect(() => {
+    if (responses != null) {
+      axios
+        .get(`http://localhost:3001/products/owner/${curr_user}`)
+        .then((response) => {
+          console.log(response.data);
+          setProduct(response.data);
+        });
+    }
+  }, [responses]);
+
+  useEffect(() => {
+    //console.log(imageUpload);
+    if (imageUpload != null && product != null) {
+      //console.log("made it in");
+      //Create reference for where to store image
+      const imageRef = ref(storage, `products/${product.product_id}/1.png`);
+      /*Used to upload an image to Firebase.
+        Note uploaded images are public access */
+      uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        //alert("Image Uploaded");
+        getDownloadURL(snapshot.ref).then((url) => {
+          setUrlImage(url);
+          //console.log(urlImage);
+        });
+      });
+    }
+  }, [imageUpload, urlImage, product]);
+
+  useEffect(() => {
+    if (product != null && urlImage != null) {
+      const imageData = {
+        product_id: product.product_id,
+        image_order: 1,
+        image_location: urlImage,
+      };
+
+      axios
+        .post(`http://localhost:3001/product_images`, imageData)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      alert("Posted");
+      window.location.reload();
+    }
+  }, [product, urlImage]);
+
   return (
     <>
       <div className="box-border relative shrink-0 mx-auto mt-5 mb-36 h-auto">
@@ -35,63 +110,71 @@ function AddProduct(props) {
         lazyLoad={false}
       >
         <section className="box-border flex relative flex-col grow shrink-0 self-stretch p-5 mx-auto w-full max-w-[1200px] min-h-[100px]">
-          
-          <Form onSubmit ={handleOnSubmit}
-            
-          >
+          <Form onSubmit={handleOnSubmit}>
             <div className="mt-2.5">
               <p>Enter Product Name</p>
             </div>
             <FormInput
               type="text"
               name="ProductName"
-              value={product_name}
-              onChange={setProductName}
+              onChange={(e) => setProductName(e.target.value)}
               placeholder="Product Name"
               className="mt-2.5"
               required={true}
             />
             <FormInput
-            type="file"
-            placeholder="Product Image"
-            name="ProductImage"
-            className="box-border flex relative flex-col shrink-0 p-2.5 mt-5 mb-11 rounded border border-solid border-stone-300"
-            required={true}
-          />
-          <FormInput
-            type="text"
-            placeholder="Product Description"
-            value={product_desciption}
-            onChange={setProductDescription}
-            name="ProductDesciption"
-            defaultValue="Please enter product description"
-            className="box-border flex relative flex-col shrink-0 p-2.5 mt-11 rounded border border-solid border-stone-300"
-            required={true}
-          />
+              type="text"
+              name="product_available_start_time"
+              onChange={(e) => setproduct_available_start_time(e.target.value)}
+              placeholder="Product Available Start Time (YYYY-MM-DD)"
+              className="mt-2.5"
+              required={true}
+            />
+            <FormInput
+              type="text"
+              name="product_available_end_time"
+              onChange={(e) => setproduct_available_end_time(e.target.value)}
+              placeholder="Product Available End Time (YYYY-MM-DD)"
+              className="mt-2.5"
+              required={true}
+            />
+            <FormInput
+              type="file"
+              placeholder="Product Image"
+              name="ProductImage"
+              className="box-border flex relative flex-col shrink-0 p-2.5 mt-5 mb-11 rounded border border-solid border-stone-300"
+              onChange={(event) => {
+                setImageUpload(event.target.files[0]);
+              }}
+              required={true}
+            />
+            <FormInput
+              type="text"
+              placeholder="Product Description"
+              onChange={(e) => setProductDescription(e.target.value)}
+              name="ProductDesciption"
+              className="box-border flex relative flex-col shrink-0 p-2.5 mt-11 rounded border border-solid border-stone-300"
+              required={true}
+            />
             <div className="mt-2.5">
               <p>Enter Product Price</p>
             </div>
             <FormInput
               name="Product Price"
-              placeholder="$0.00"
-              value={product_price}
-              onChange={setProductPrice}
+              placeholder="Product Price in Dollars (per day)"
+              onChange={(e) => setProductPrice(e.target.value)}
               type="text"
               className="mt-2.5"
               required={true}
             />
-            <FormSelect
+            <FormInput
               name="Category"
               className="box-border flex relative flex-col shrink-0 self-start mt-5"
-              value={product_category}
-              onChange={setProductCategory}
-              options={[
-                { value: "Tool", name: "Tool" },
-                { value: "Something else", name: "Something else" },
-              ]}
+              placeholder="product category"
+              onChange={(e) => setProductCategory(e.target.value)}
               required
             />
-            <FormSubmitButton text="Submit" className="mt-2.5" />
+            <Button className="mt-2.5">Submit</Button>
           </Form>
         </section>
       </div>

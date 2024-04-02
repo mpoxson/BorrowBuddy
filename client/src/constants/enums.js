@@ -4,7 +4,8 @@ export const PAGE_ROUTES = {
   LOGIN: "/login",
   USERS: "/UsersList",
   FEEDBACK: "/feedback",
-  PRODUCT: "/Product"
+  PRODUCT: "/Product",
+  ADDPRODUCT: "/AddProduct",
 };
 
 export const PAGE_NAMES = [
@@ -15,6 +16,7 @@ export const PAGE_NAMES = [
   { NAME: "Feedback", ROUTE: "/Feedback" },
   { NAME: "Product", ROUTE: "/Product" },
   { NAME: "Conversations", ROUTE: "/Conversations" },
+  { NAME: "Add Product", ROUTE: "/AddProduct" },
 ];
 
 export const COLORS = {

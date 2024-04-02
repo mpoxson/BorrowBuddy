@@ -14,6 +14,7 @@ import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 import { storage } from "../firebase/config";
 import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import testImage from "../image/test.jpg";
 
 function Card(props) {
   const [saved, setSaved] = useState(false);
@@ -21,7 +22,6 @@ function Card(props) {
 
   //For page displaying images
   const [imageSingle, setImageSingle] = useState([]);
-
 
   useEffect(() => {
     // Load saved status from local storage when component mounts
@@ -43,7 +43,18 @@ function Card(props) {
     axios
       .get(`http://localhost:3001/product_images/min/${props.props.product_id}`)
       .then((response) => {
-        setImageSingle(response.data);
+        if (response.data !== "" && response.data.constructor === Object) {
+          setImageSingle(response.data);
+        } else {
+          let temp = { image_location: testImage };
+          setImageSingle(temp);
+          console.log(
+            "asdfkjgaskljglkgjsagjkl" +
+              imageSingle +
+              " " +
+              imageSingle.image_location
+          );
+        }
       })
       .catch((error) => {
         console.error("Error fetching images:", error);
@@ -128,7 +139,12 @@ function Card(props) {
             color: COLORS.SECONDARY,
           }}
           //handle images
-          avatar={<Avatar src={userName.user_profile_picture} aria-label="Profile Pic" />}
+          avatar={
+            <Avatar
+              src={userName.user_profile_picture}
+              aria-label="Profile Pic"
+            />
+          }
           action={
             <Tooltip title="Save" disableInteractive arrow>
               <IconButton aria-label="Save" onClick={handleSave}>

@@ -34,7 +34,7 @@ function Footers() {
         backgroundColor: COLORS.SECONDARY,
       }}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         <Grid container spacing={1} sx={{ marginBottom: "10px" }}>
           {settings.map((setting) => (
             <Grid xs>
