@@ -94,7 +94,6 @@ function AddProduct(props) {
         .catch((error) => {
           console.log(error);
         });
-      alert("Posted");
       window.location.reload();
     }
   }, [product, urlImage]);

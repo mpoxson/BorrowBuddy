@@ -14,7 +14,7 @@ export const PAGE_NAMES = [
   // { NAME: "Login", ROUTE: "/login" },
   { NAME: "Account", ROUTE: "/usersList" },
   { NAME: "Feedback", ROUTE: "/Feedback" },
-  { NAME: "Product", ROUTE: "/Product" },
+  //{ NAME: "Product", ROUTE: "/Product" },
   { NAME: "Conversations", ROUTE: "/Conversations" },
   { NAME: "Add Product", ROUTE: "/AddProduct" },
 ];
