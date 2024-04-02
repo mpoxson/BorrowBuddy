@@ -91,12 +91,12 @@ export default function App() {
                   element={<Login onLogin={handleLogin} />}
                 />
                 <Route path="/register" element={<Register />} />
-                <Route
+                {/* <Route
                   path="/"
                   element={
-                    isAuthenticated ? <Home /> : <Login onLogin={handleLogin} />
+                    isAuthenticated ? <Home /> : <Login onLogin={handleLogin} /> 
                   }
-                />
+                /> */}
 
                 {/* These routes are protected page, add more below... */}
                 <Route
