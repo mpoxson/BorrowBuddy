@@ -14,6 +14,7 @@ import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 import { storage } from "../firebase/config";
 import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import testImage from "../image/test.jpg";
 
 function Card(props) {
   const [saved, setSaved] = useState(false);
@@ -22,9 +23,13 @@ function Card(props) {
   //For page displaying images
   const [imageSingle, setImageSingle] = useState([]);
 
-
-  //invoke database user_name in each card title
   useEffect(() => {
+    // Load saved status from local storage when component mounts
+    const savedIds = JSON.parse(localStorage.getItem('savedProductIds')) || {};
+    const save_id = savedIds[props.props.product_id];
+    setSaved(!!save_id); // Convert to boolean value
+  
+    // Fetch user data
     axios
       .get(`http://localhost:3001/users/${props.props.owner_id}`)
       .then((response) => {
@@ -33,22 +38,76 @@ function Card(props) {
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [props.props.owner_id]);
 
-  useEffect(() => {
+    // Fetch product image data
     axios
       .get(`http://localhost:3001/product_images/min/${props.props.product_id}`)
       .then((response) => {
-        setImageSingle(response.data);
+        if (response.data !== "" && response.data.constructor === Object) {
+          setImageSingle(response.data);
+        } else {
+          let temp = { image_location: testImage };
+          setImageSingle(temp);
+          console.log(
+            "asdfkjgaskljglkgjsagjkl" +
+              imageSingle +
+              " " +
+              imageSingle.image_location
+          );
+        }
       })
       .catch((error) => {
         console.error("Error fetching images:", error);
       });
-  }, [props.props.product_id]);
+  }, [props.props.owner_id, props.props.product_id]);
 
-  const handleSave = (event) => {
-    if (saved === null || saved === false) setSaved(true);
-    if (saved === true) setSaved(false);
+  const handleSave = async () => {
+    try {
+        let response;
+        let save_id;
+
+        if (!saved) {
+            const saveData = {
+                user_id: props.props.owner_id,
+                product_id: props.props.product_id,
+                save_status: true 
+            };
+            response = await axios.post("http://localhost:3001/product_saves", saveData);
+            save_id = response.data.save_id; // save save_id
+            ////TEST
+            console.log("Response data:", response.data);
+            console.log("Save ID:", save_id);
+            setSaved(true);
+            console.log("Product saved:", response.data);
+
+            // Save save_id to local storage
+            const savedIds = JSON.parse(localStorage.getItem('savedProductIds')) || {};
+            savedIds[props.props.product_id] = save_id;
+            localStorage.setItem('savedProductIds', JSON.stringify(savedIds));
+        } else {
+            // Get the save_id of the saved product
+            const savedIds = JSON.parse(localStorage.getItem('savedProductIds')) || {};
+            save_id = savedIds[props.props.product_id];
+            //TEST
+            console.log("Saved IDs from local storage:", savedIds); // Export information about saved products
+            console.log("Save ID from local storage:", save_id); // Output the save_id obtained from local storage
+
+            if (!save_id) {
+                console.error("No save_id found for the product.");
+                return;
+            }
+
+            console.log("Save ID:", save_id);
+            response = await axios.delete(`http://localhost:3001/product_saves/${save_id}`);
+            // Delete saved state data
+            delete savedIds[props.props.product_id];
+            localStorage.setItem('savedProductIds', JSON.stringify(savedIds));
+            setSaved(false);
+            console.log("Product unsaved:", response.data);
+        }
+    } catch (error) {
+        console.error("Error handling save:", error);
+    }
   };
 
   let start = "" + props.props.product_available_start_time;
@@ -80,7 +139,12 @@ function Card(props) {
             color: COLORS.SECONDARY,
           }}
           //handle images
-          avatar={<Avatar src={userName.user_profile_picture} aria-label="Profile Pic" />}
+          avatar={
+            <Avatar
+              src={userName.user_profile_picture}
+              aria-label="Profile Pic"
+            />
+          }
           action={
             <Tooltip title="Save" disableInteractive arrow>
               <IconButton aria-label="Save" onClick={handleSave}>

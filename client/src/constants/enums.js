@@ -4,17 +4,19 @@ export const PAGE_ROUTES = {
   LOGIN: "/login",
   USERS: "/UsersList",
   FEEDBACK: "/feedback",
-  PRODUCT: "/Product"
+  PRODUCT: "/Product",
+  ADDPRODUCT: "/AddProduct",
 };
 
 export const PAGE_NAMES = [
   { NAME: "Home", ROUTE: "/" },
   // { NAME: "Register", ROUTE: "/register" },
   // { NAME: "Login", ROUTE: "/login" },
-  { NAME: "Account", ROUTE: "/UsersList" },
+  { NAME: "Account", ROUTE: "/usersList" },
   { NAME: "Feedback", ROUTE: "/Feedback" },
-  { NAME: "Product", ROUTE: "/Product" },
+  //{ NAME: "Product", ROUTE: "/Product" },
   { NAME: "Conversations", ROUTE: "/Conversations" },
+  { NAME: "Add Product", ROUTE: "/AddProduct" },
 ];
 
 export const COLORS = {
