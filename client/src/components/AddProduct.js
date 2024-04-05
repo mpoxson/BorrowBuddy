@@ -18,6 +18,7 @@ function AddProduct(props) {
   const [product, setProduct] = useState(null);
   const [imageUpload, setImageUpload] = useState(null);
   const [urlImage, setUrlImage] = useState(null);
+  const [sentinal, setSetinal] = useState(0);
 
   let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
@@ -79,12 +80,14 @@ function AddProduct(props) {
   }, [imageUpload, urlImage, product]);
 
   useEffect(() => {
-    if (product != null && urlImage != null) {
+    if (product != null && urlImage != null && sentinal == 0) {
       const imageData = {
         product_id: product.product_id,
         image_order: 1,
         image_location: urlImage,
       };
+
+      setSetinal(1);
 
       axios
         .post(`http://localhost:3001/product_images`, imageData)
@@ -94,7 +97,6 @@ function AddProduct(props) {
         .catch((error) => {
           console.log(error);
         });
-      alert("Posted");
       window.location.reload();
     }
   }, [product, urlImage]);
