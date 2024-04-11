@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    
+
     const Messages = sequelize.define("Messages", {
         MessageID: {
             type: DataTypes.INTEGER,
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         Timestamp: {
             type: DataTypes.DATE,
             allowNull: true, 
-            //Default = sequelize.NOW when rental_is_return = 1 (true)?
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP') //Set the default value to the current time
         },
     }, {
         timestamps: false,

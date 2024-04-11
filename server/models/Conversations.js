@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         LastMessageTime: {
             type: DataTypes.DATE,
-            allowNull: true, 
-            //Default = sequelize.NOW when rental_is_return = 1 (true)?
+            allowNull: true,
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP') //Set the default value to the current time
         },
     }, {
         timestamps: false,
