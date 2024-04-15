@@ -33,6 +33,24 @@ router.get("/avg/:ratedId", async (req, res) => {
   }
 });
 
+router.get("/rated/:ratedId/:raterId", async (req, res) => {
+  const user_rated_id = req.params.ratedId;
+  const user_rating_id = req.params.raterId;
+
+  try {
+    const rated = await ratings.findAll({
+      where: {
+        user_rated_id: user_rated_id,
+        user_rating_id: user_rating_id,
+      },
+    });
+    res.json(rated);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   const rating = req.body;
   await ratings.create(rating);

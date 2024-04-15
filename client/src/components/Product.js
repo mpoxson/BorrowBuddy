@@ -36,6 +36,7 @@ const Product = () => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [ratings, setRatings] = useState(null);
+  const [ratable, setRatable] = useState(false);
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -47,6 +48,8 @@ const Product = () => {
 
   //For page displaying images
   const [imageList, setImageList] = useState([]);
+
+  let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
   useEffect(() => {
     axios
@@ -78,6 +81,18 @@ const Product = () => {
           console.log(response.data);
           setRatings(response.data.average_rating);
         });
+      if (curr_user != product.owner_id) {
+        axios
+          .get(
+            `http://localhost:3001/ratings/rated/${product.owner_id}/${curr_user}`
+          )
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.length == 0) {
+              setRatable(true);
+            }
+          });
+      }
       setDescription(product.product_description);
       setStart(product.product_available_start_time.slice(0, 10));
       setEnd(product.product_available_end_time.slice(0, 10));
@@ -113,8 +128,6 @@ const Product = () => {
   }
 
   //const img_array = [img, img, img];
-
-  let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
   const handleReserve = async () => {
     try {
@@ -277,6 +290,7 @@ const Product = () => {
                     }}
                     variant="outlined"
                     onClick={handleOpenRate}
+                    disabled={!ratable}
                   >
                     Rate
                   </Button>

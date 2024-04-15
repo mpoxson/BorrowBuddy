@@ -48,7 +48,8 @@ Once the server is running, you can interact with the API endpoints to manage us
 - `GET /api/ratings`: Retrieve a list of all ratings.
 - `GET /api/product_saves`: Retrieve a saved list of all products.
 - `GET /api/product_images`: Retrieve a list of all product images.
-- `GET /api/ratings/avg/:ratedId`: Retrieve the average rating for a user
+- `GET /api/ratings/avg/:ratedId`: Retrieve the average rating for a user.
+- `GET /api/ratings/:ratedId/:raterId`: Retrieve ratings from one user to another.
 
 ###
 
