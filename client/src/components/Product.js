@@ -19,6 +19,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import Rate from "./Rate";
+import Rating from "@mui/material/Rating";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -33,10 +35,15 @@ const Product = () => {
   const [category, setcategory] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
+  const [ratings, setRatings] = useState(null);
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [openRate, setRateOpen] = React.useState(false);
+  const handleOpenRate = () => setRateOpen(true);
+  const handleCloseRate = () => setRateOpen(false);
 
   //For page displaying images
   const [imageList, setImageList] = useState([]);
@@ -64,6 +71,12 @@ const Product = () => {
         .then((response) => {
           console.log(response.data);
           setUser(response.data);
+        });
+      axios
+        .get(`http://localhost:3001/ratings/avg/${product.owner_id}`)
+        .then((response) => {
+          console.log(response.data);
+          setRatings(response.data.average_rating);
         });
       setDescription(product.product_description);
       setStart(product.product_available_start_time.slice(0, 10));
@@ -209,7 +222,12 @@ const Product = () => {
                   <Typography>{user.user_name}</Typography>
                   <Box>
                     <Typography>{user.user_city}</Typography>
-                    <Typography>4.5/5</Typography>
+                    <Rating
+                      name="rate"
+                      value={ratings}
+                      precision={0.5}
+                      readOnly
+                    />
                   </Box>
                 </Box>
               </Box>
@@ -258,10 +276,19 @@ const Product = () => {
                       borderColor: COLORS.SECONDARY,
                     }}
                     variant="outlined"
+                    onClick={handleOpenRate}
                   >
                     Rate
                   </Button>
                 )}
+                <Modal
+                  open={openRate}
+                  onClose={handleCloseRate}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Rate props={user} />
+                </Modal>
               </Box>
             </Grid>
           </Grid>
