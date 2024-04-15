@@ -48,7 +48,10 @@ Once the server is running, you can interact with the API endpoints to manage us
 - `GET /api/ratings`: Retrieve a list of all ratings.
 - `GET /api/product_saves`: Retrieve a saved list of all products.
 - `GET /api/product_images`: Retrieve a list of all product images.
-### 
+- `GET /api/ratings/avg/:ratedId`: Retrieve the average rating for a user
+
+###
+
 - `POST /api/users`: Add a new user to the database.
 - `POST /api/products`: Add a new product to the database.
 - `POST /api/product_rentals`: Add a new product rental to the database.
@@ -56,20 +59,24 @@ Once the server is running, you can interact with the API endpoints to manage us
 - `POST /api/ratings`: Add a new rating to the database.
 - `POST /api/product_saves`: Add a new saved list of all products to the database.
 - `POST /api/product_images`: Add a new product images to the database.
-### 
-- `PUT /api/product_rentals/:rentalId`   Update product_rentals by rentalId to the database.
-- `PUT /api/product_saves/:saveId`    Update product_saves by saveId to the database.
-- `PUT /api/products/:productId`    Update products by productId to the database.
-- `PUT /api/users/:userId`       Update users by userId to the database.
-- `PUT /api/Messages/:messageID`     Update Messages by messageID to the database.
-- `PUT /api/Conversations/:conversationId`    Update Conversations by conversationID to the database.
-### 
-- `DELETE /api/product_rentals/:rentalId`     Delete product_rentals by rentalId to the database.
-- `DELETE /api/product_images/:imageId`     Delete product_images by imageId to the database.
-- `DELETE /api/product_saves/:saveId`     Delete product_saves by saveId to the database.
-- `DELETE /api/products/:productId`      Delete products by productId to the database.
-- `DELETE /api/Messages/:messageID`      Delete Messages by messageID to the database.
-- `DELETE /api/Conversations/:conversationId`    Delete Conversations by conversationID to the database.
+
+###
+
+- `PUT /api/product_rentals/:rentalId` Update product_rentals by rentalId to the database.
+- `PUT /api/product_saves/:saveId` Update product_saves by saveId to the database.
+- `PUT /api/products/:productId` Update products by productId to the database.
+- `PUT /api/users/:userId` Update users by userId to the database.
+- `PUT /api/Messages/:messageID` Update Messages by messageID to the database.
+- `PUT /api/Conversations/:conversationId` Update Conversations by conversationID to the database.
+
+###
+
+- `DELETE /api/product_rentals/:rentalId` Delete product_rentals by rentalId to the database.
+- `DELETE /api/product_images/:imageId` Delete product_images by imageId to the database.
+- `DELETE /api/product_saves/:saveId` Delete product_saves by saveId to the database.
+- `DELETE /api/products/:productId` Delete products by productId to the database.
+- `DELETE /api/Messages/:messageID` Delete Messages by messageID to the database.
+- `DELETE /api/Conversations/:conversationId` Delete Conversations by conversationID to the database.
 
 ### Client/frontend (React.js)
 
