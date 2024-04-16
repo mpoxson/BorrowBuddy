@@ -21,6 +21,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Rate from "./Rate";
 import Rating from "@mui/material/Rating";
+import Edit from "./Edit";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -28,13 +29,8 @@ const Product = () => {
   const [user, setUser] = useState(null);
   const [refreshData, setRefreshData] = useState(true);
   const [imageAva, setImageAva] = useState([]);
-  const [edit, setEdit] = useState(true);
   let { productId } = useParams();
   const [error, setError] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setcategory] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
   const [ratings, setRatings] = useState(null);
   const [ratable, setRatable] = useState(false);
 
@@ -45,6 +41,10 @@ const Product = () => {
   const [openRate, setRateOpen] = React.useState(false);
   const handleOpenRate = () => setRateOpen(true);
   const handleCloseRate = () => setRateOpen(false);
+
+  const [openEdit, setEditOpen] = React.useState(false);
+  const handleOpenEdit = () => setEditOpen(true);
+  const handleCloseEdit = () => setEditOpen(false);
 
   //For page displaying images
   const [imageList, setImageList] = useState([]);
@@ -93,10 +93,6 @@ const Product = () => {
             }
           });
       }
-      setDescription(product.product_description);
-      setStart(product.product_available_start_time.slice(0, 10));
-      setEnd(product.product_available_end_time.slice(0, 10));
-      setcategory(product.product_category);
     }
   }, [product]);
   //Create an array of image URLs from the product_images associated with product
@@ -176,27 +172,6 @@ const Product = () => {
     rental: rental[0],
   };
 
-  const handleEdits = async () => {
-    try {
-      let updates = product;
-
-      updates.product_description = description;
-      updates.product_category = category;
-      updates.product_available_start_time = start;
-      updates.product_available_end_time = end;
-
-      console.log(updates);
-
-      //Check if is rented is still no first
-      //set is rented before making product rental
-      await axios.put(`http://localhost:3001/products/${productId}`, updates);
-      window.location.reload();
-    } catch (error) {
-      // Error handling code remains the same
-      console.log("errored out: " + error);
-    }
-  };
-
   return (
     <Container
       maxWidth="xxl"
@@ -259,9 +234,9 @@ const Product = () => {
                   >
                     <Typography>${product.product_price}/Day</Typography>
                   </Box>
-                  <Box color={COLORS.ACCENT}>
+                  {/* <Box color={COLORS.ACCENT}>
                     <Typography>100 previous rents</Typography>
-                  </Box>
+                  </Box> */}
                 </Box>
               </Box>
             </Grid>
@@ -275,9 +250,7 @@ const Product = () => {
                       borderColor: COLORS.SECONDARY,
                     }}
                     variant="outlined"
-                    onClick={() => {
-                      setEdit(false);
-                    }}
+                    onClick={handleOpenEdit}
                   >
                     Edit
                   </Button>
@@ -295,6 +268,14 @@ const Product = () => {
                     Rate
                   </Button>
                 )}
+                <Modal
+                  open={openEdit}
+                  onClose={handleCloseEdit}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Edit props={product} />
+                </Modal>
                 <Modal
                   open={openRate}
                   onClose={handleCloseRate}
@@ -323,15 +304,12 @@ const Product = () => {
               sx={{ marginTop: "9px" }}
               variant="filled"
               InputProps={{
-                readOnly: edit,
+                readOnly: true,
               }}
               fullWidth
               multiline
               minRows={6}
-              defaultValue={description}
-              onChange={(event) => {
-                setDescription(event.target.value);
-              }}
+              defaultValue={product.product_description}
             />
           </Box>
           <Box
@@ -343,34 +321,29 @@ const Product = () => {
             <TextField
               fullWidth
               InputProps={{
-                readOnly: edit,
+                readOnly: true,
               }}
               label="Category: "
-              defaultValue={category}
-              onChange={(event) => {
-                setcategory(event.target.value);
-              }}
+              defaultValue={product.product_category}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%", marginY: "7px" }}
                 label="Start:"
-                readOnly={edit}
-                defaultValue={dayjs(start)}
-                onChange={(newValue) => {
-                  setStart(newValue.toDate());
-                }}
+                readOnly={true}
+                defaultValue={dayjs(
+                  product.product_available_start_time.slice(0, 10)
+                )}
               />
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%", marginY: "7px" }}
                 label="Start:"
-                readOnly={edit}
-                defaultValue={dayjs(end)}
-                onChange={(newValue) => {
-                  setEnd(newValue.toDate());
-                }}
+                readOnly
+                defaultValue={dayjs(
+                  product.product_available_end_time.slice(0, 10)
+                )}
               />
             </LocalizationProvider>
           </Box>
@@ -395,13 +368,6 @@ const Product = () => {
           >
             <ManageRentals props={props} />
           </Modal>
-          {edit == false ? (
-            <Button variant="contained" onClick={handleEdits}>
-              Submit Changes
-            </Button>
-          ) : (
-            ""
-          )}
         </Box>
         <Box width={"100%"} display={"flex"} justifyContent={"right"}>
           {rental[0] || product.owner_id == curr_user ? (
