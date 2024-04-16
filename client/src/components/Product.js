@@ -127,7 +127,9 @@ const Product = () => {
 
   const handleReserve = async () => {
     try {
-      setRefreshData(!refreshData);
+      //const response = await axios.get('your_api_endpoint');
+      //const latestData = response.data;
+
       if (product.product_is_rented.toLowerCase() == "yes") {
         return alert("Product already rented!");
       }
