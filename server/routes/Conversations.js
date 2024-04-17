@@ -31,11 +31,16 @@ router.get('/user/:userId', async (req, res) => {
 });
 
 router.post("/", async (req,res)=>{
-    const Conversation=req.body;
-    await Conversations.create(Conversation);
-    res.json(Conversation);
-     
-})//This is for frontend 
+    try {
+        const conversation = req.body;
+        const createdConversation = await Conversations.create(conversation);
+        res.status(201).json(createdConversation); // Return the created conversation object
+    } catch (error) {
+        console.error('Error creating conversation:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 
 //PUT route to update conversation fields
