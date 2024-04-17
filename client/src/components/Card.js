@@ -16,6 +16,7 @@ import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
 import testImage from "../image/test.jpg";
 import Rating from "@mui/material/Rating";
+import { Link } from "react-router-dom"; 
 
 function Card(props) {
   const [saved, setSaved] = useState(false);
@@ -155,10 +156,12 @@ function Card(props) {
           }}
           //handle images
           avatar={
-            <Avatar
+            <Link to={`users/${props.props.owner_id}`} style={{ textDecoration: 'none' }}>
+              <Avatar
               src={userName.user_profile_picture}
               aria-label="Profile Pic"
-            />
+              />
+            </Link>
           }
           action={
             <Tooltip title="Save" disableInteractive arrow>
@@ -172,9 +175,11 @@ function Card(props) {
             </Tooltip>
           }
           title={
-            <Typography color={COLORS.SECONDARY} variant="h6">
-              {userName.user_name}
-            </Typography>
+            <Link to={`users/${props.props.owner_id}`} style={{ textDecoration: 'none' }}>
+              <Typography color={COLORS.SECONDARY} variant="h6">
+                {userName.user_name}
+              </Typography>
+            </Link>
           }
           subheader={
             <Rating name="rate" value={ratings} precision={0.5} readOnly />

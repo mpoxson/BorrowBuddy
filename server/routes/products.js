@@ -88,4 +88,25 @@ router.delete("/:productId", async (req, res) => {
   }
 });
 
+//for userDetails.js
+router.get("/userDetail/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const userProducts = await products.findAll({
+      where: {
+        owner_id: userId,
+      },
+    });
+
+    if (!userProducts || userProducts.length === 0) {
+      return res.status(404).json({ message: "User's products not found" });
+    }
+
+    res.json(userProducts);
+  } catch (error) {
+    console.error("Error fetching user's products:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 module.exports = router;
