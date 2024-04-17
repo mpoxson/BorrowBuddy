@@ -66,4 +66,23 @@ router.put("/:userId", async (req, res) => {
   }
 });
 
+
+router.delete("/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const user = await users.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "user id not found" });
+    }
+
+    // Delete the user
+    await user.destroy();
+
+    res.json({ message: "user id deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user id:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 module.exports = router;
