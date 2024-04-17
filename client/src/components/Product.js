@@ -55,7 +55,7 @@ const Product = () => {
     axios
       .get(`http://localhost:3001/products/${productId}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setProduct(response.data);
       });
   }, [refreshData]);
@@ -63,7 +63,7 @@ const Product = () => {
     axios
       .get(`http://localhost:3001/product_rentals/product/active/${productId}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setRental(response.data);
       });
   }, [productId]);
@@ -72,7 +72,7 @@ const Product = () => {
       axios
         .get(`http://localhost:3001/users/${product.owner_id}`)
         .then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           setUser(response.data);
         });
       axios
@@ -197,6 +197,27 @@ const Product = () => {
     }
   };
 
+const handleMessageClick = async () => {
+  try {
+    const data = {
+      product_id: productId,
+      user_id1: curr_user,
+      user_id2: user.user_id,
+    };
+
+    const response = await axios.post("http://localhost:3001/Conversations", data);
+    
+    const conversationId = response.data.ConversationID;
+    const messageUrl = `http://localhost:3000/Messages/${conversationId}`;
+
+    window.location.href = messageUrl;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
   return (
     <Container
       maxWidth="xxl"
@@ -282,9 +303,10 @@ const Product = () => {
                     Edit
                   </Button>
                 ) : (
+		  <div>
                   <Button
                     sx={{
-                      marginTop: "5px",
+                      marginTop: "10px",
                       color: COLORS.SECONDARY,
                       borderColor: COLORS.SECONDARY,
                     }}
@@ -294,6 +316,20 @@ const Product = () => {
                   >
                     Rate
                   </Button>
+
+		  <Button
+        	    sx={{
+          	      marginTop: "10px",
+		      marginLeft: "15px",
+          	      color: COLORS.SECONDARY,
+          	      borderColor: COLORS.SECONDARY,
+        	    }}
+        	    variant="outlined"
+        	    onClick={handleMessageClick} // Add onClick event handler
+      	    	  >
+        	    Message
+      	    	  </Button>
+		  </div>
                 )}
                 <Modal
                   open={openRate}
@@ -365,7 +401,7 @@ const Product = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%", marginY: "7px" }}
-                label="Start:"
+                label="End:"
                 readOnly={edit}
                 defaultValue={dayjs(end)}
                 onChange={(newValue) => {
