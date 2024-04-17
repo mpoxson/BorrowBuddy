@@ -75,4 +75,23 @@ router.delete("/:imageId", async (req, res) => {
     }
   });
   
+  //update productImage
+router.put("/:imageId", async (req, res) => {
+    const imageId = req.params.imageId;
+  
+    try {
+      const image = await product_images.findByPk(imageId);
+      if (!image) {
+        return res.status(404).json({ message: "image id not found" });
+      }
+  
+      // Update image fields based on the request body
+      await image.update(req.body);
+  
+      res.json({ message: "User image updated successfully" });
+    } catch (error) {
+      console.error("Error updating image rate:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 module.exports=router;
