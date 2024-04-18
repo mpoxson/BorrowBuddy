@@ -80,6 +80,25 @@ router.get('/product/:productId', async (req, res) => {
     }
 });
 
+//Route to get all INACTIVE product_rental attached to a PRODUCT ID
+//api test success in backend
+router.get('/product/inactive/:productId', async (req, res) => {
+    const product_id = req.params.productId;
+
+    try {
+        const saveByProduct = await product_rentals.findAll({
+            where: {
+                product_id: product_id,
+                rental_is_return: 'True'
+            }
+        });
+        res.json(saveByProduct);
+    } catch (error) {
+        console.error('Error fetching product rentals:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 //Route to get all ACTIVE product_rental attached to a PRODUCT ID
 //api test success in backend
 router.get('/product/active/:productId', async (req, res) => {
