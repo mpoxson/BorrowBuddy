@@ -43,11 +43,42 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
+//get save info for product from a specific user
+router.get("/product/:productId/:userId", async (req, res) => {
+  const product_id = req.params.productId;
+  const user_id = req.params.userId;
+
+  try {
+    const saveByProduct = await product_saves.findAll({
+      where: {
+        product_id: product_id,
+        user_id: user_id,
+      },
+    });
+    const saveid = saveByProduct[0].dataValues.save_id;
+    res.json(saveid);
+  } catch (error) {
+    console.error("Error fetching product saves:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// router.post("/", async (req, res) => {
+//   const product_save = req.body;
+//   await product_saves.create(product_save);
+//   res.json(product_save);
+// }); //This is for frontend
+
 router.post("/", async (req, res) => {
-  const product_save = req.body;
-  await product_saves.create(product_save);
-  res.json(product_save);
-}); //This is for frontend
+  try {
+    const product_save = req.body;
+    const save = await product_saves.create(product_save);
+    res.json({ ...save.toJSON(), message: "Save created successfully" });
+  } catch (error) {
+    console.error("Error creating save:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 //test successfully, we may never use update route
 router.put("/:saveId", async (req, res) => {

@@ -24,6 +24,26 @@ router.get("/:productId", async (req, res) => {
   }
 });
 
+router.get("/owner/:owner_id", async (req, res) => {
+  const owner_id = req.params.owner_id;
+
+  try {
+    const product = await products.findOne({
+      where: {
+        owner_id: owner_id,
+      },
+      order: [["product_id", "DESC"]],
+    });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   const product = req.body;
   await products.create(product);
@@ -68,4 +88,25 @@ router.delete("/:productId", async (req, res) => {
   }
 });
 
+//for userDetails.js
+router.get("/userDetail/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const userProducts = await products.findAll({
+      where: {
+        owner_id: userId,
+      },
+    });
+
+    if (!userProducts || userProducts.length === 0) {
+      return res.status(404).json({ message: "User's products not found" });
+    }
+
+    res.json(userProducts);
+  } catch (error) {
+    console.error("Error fetching user's products:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 module.exports = router;
