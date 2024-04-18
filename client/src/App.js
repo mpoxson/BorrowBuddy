@@ -106,6 +106,7 @@ export default function App() {
                   <Route path="/Product" element={<Product />} />
                   <Route path="/Conversations" element={<Conversations />} />
                   <Route path="/Messages/:conversationID" element={<Messages />} />
+                  <Route path="*" element={<NoMatch />} />
                 </Route>
               </Routes>
             </header>
