@@ -231,7 +231,9 @@ function AddProduct(props) {
             required={true}
           />
         </div>
-        <FormInput
+        <div className="mt-2.5">
+          <label htmlFor="ProductImage"><br></br></label>
+          <FormInput
               type="file"
               placeholder="Product Image"
               name="ProductImage"
