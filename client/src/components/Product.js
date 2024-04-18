@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 import Rate from "./Rate";
 import Rating from "@mui/material/Rating";
 import Edit from "./Edit";
+import StarRateIcon from '@mui/icons-material/StarRate';
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -213,11 +214,14 @@ const Product = () => {
                   <Box>
                     <Typography>{user.user_city}</Typography>
                     <Rating
-                      name="rate"
-                      value={ratings}
-                      precision={0.5}
-                      readOnly
-                    />
+              name="rate"
+              emptyIcon={
+                <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
+              }
+              value={ratings}
+              precision={0.5}
+              readOnly
+            />
                   </Box>
                 </Box>
               </Box>

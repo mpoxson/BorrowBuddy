@@ -2,6 +2,7 @@ import { Avatar, Paper, Rating, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import StarRateIcon from "@mui/icons-material/StarRate";
 
 const Review = (prop) => {
   const [rater, setRater] = useState(null);
@@ -37,8 +38,12 @@ const Review = (prop) => {
               <Typography>loading</Typography>
             )}
           </Box>
+
           <Rating
             name="rate"
+            emptyIcon={
+              <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
+            }
             value={prop.prop.rating_value}
             precision={0.5}
             readOnly

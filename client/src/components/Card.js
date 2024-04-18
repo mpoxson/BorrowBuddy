@@ -16,7 +16,8 @@ import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
 import testImage from "../image/test.jpg";
 import Rating from "@mui/material/Rating";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
+import StarRateIcon from '@mui/icons-material/StarRate';
 
 function Card(props) {
   const [saved, setSaved] = useState(false);
@@ -157,10 +158,13 @@ function Card(props) {
           }}
           //handle images
           avatar={
-            <Link to={`users/${props.props.owner_id}`} style={{ textDecoration: 'none' }}>
+            <Link
+              to={`users/${props.props.owner_id}`}
+              style={{ textDecoration: "none" }}
+            >
               <Avatar
-              src={userName.user_profile_picture}
-              aria-label="Profile Pic"
+                src={userName.user_profile_picture}
+                aria-label="Profile Pic"
               />
             </Link>
           }
@@ -176,14 +180,25 @@ function Card(props) {
             </Tooltip>
           }
           title={
-            <Link to={`users/${props.props.owner_id}`} style={{ textDecoration: 'none' }}>
+            <Link
+              to={`users/${props.props.owner_id}`}
+              style={{ textDecoration: "none" }}
+            >
               <Typography color={COLORS.SECONDARY} variant="h6">
                 {userName.user_name}
               </Typography>
             </Link>
           }
           subheader={
-            <Rating name="rate" value={ratings} precision={0.5} readOnly />
+            <Rating
+              name="rate"
+              emptyIcon={
+                <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
+              }
+              value={ratings}
+              precision={0.5}
+              readOnly
+            />
           }
         />
 
