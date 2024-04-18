@@ -41,7 +41,7 @@ const Home = () => {
     let userId = JSON.parse(localStorage.getItem("user"))["user_id"];
 
     if (checkbox === "saved") {
-      endpoint = "/product_saves";
+      endpoint = "/product_saves/user/" + userId;
     } else if (checkbox === "rentals") {
       endpoint = "/product_rentals/user/active/" + userId;
     }

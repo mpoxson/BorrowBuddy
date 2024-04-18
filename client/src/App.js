@@ -25,6 +25,7 @@ import Product from "./components/Product";
 import Conversations from "./components/Conversations";
 import Messages from "./components/Messages";
 import AddProduct from "./components/AddProduct";
+import UserDetails from "./components/UserDetails";
 
 const theme = createTheme({
   palette: {
@@ -120,6 +121,7 @@ export default function App() {
                     element={<Messages />}
                   />
                   <Route path="/AddProduct" element={<AddProduct />} />
+                  <Route path="/users/:userId" element={<UserDetails />}  />
                 </Route>
               </Routes>
             </header>
