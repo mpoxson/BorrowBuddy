@@ -12,6 +12,7 @@ import { Divider } from "semantic-ui-react";
 import axios from "axios";
 import Modal from "@mui/material/Modal";
 import ManageRentals from "./ManageRentals";
+import PastRentals from "./PastRentals";
 import { storage } from "../firebase/config";
 import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
@@ -50,6 +51,8 @@ const Product = () => {
 
   //For page displaying images
   const [imageList, setImageList] = useState([]);
+  //Displaying rentals
+  const [rentalList, setRentalList] = useState([]);
 
   let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
@@ -111,6 +114,15 @@ const Product = () => {
       .catch((error) => {
         console.error("Error fetching images:", error);
       });
+  }, [productId]);
+
+  //Create an array of rentals from the product_rentals associated with product
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/product_rentals/inactive/${productId}`)
+      .then(res => setRentalList(res.data))
+      .catch(err => console.log(err))
+
   }, [productId]);
 
   if (!product) {
@@ -433,6 +445,20 @@ const Product = () => {
           )}
         </Box>
       </Box>
+
+      {/* Past rentals box */}
+      {/* <Paper sx={{ marginTop: "10px" }} elevation={3}>
+        <Typography
+          variant="h5"
+          sx={{ paddingTop: "5px", marginBottom: "-5px" }}
+        >
+          Past Rentals
+        </Typography>
+        <Divider />
+        <Box width={"98%"} display="flex" justifyContent="center">
+          <PastRentals props={rentalList} />
+        </Box>
+      </Paper> */}
 
       {/* Box for comments */}
       {/* Put all this in a map for each comment of a certain product */}

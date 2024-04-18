@@ -4,7 +4,7 @@ import axios from "axios";
 //import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FormInput, Form, FormSelect, Button } from "semantic-ui-react";
 import { storage } from "../firebase/config";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
 
 function AddProduct(props) {
   const [product_name, setProductName] = useState("");
@@ -16,9 +16,18 @@ function AddProduct(props) {
   const [product_available_end_time, setproduct_available_end_time] =
     useState("");
   const [product, setProduct] = useState(null);
-  const [imageUpload, setImageUpload] = useState(null);
-  const [urlImage, setUrlImage] = useState(null);
+  const [imagesUpload, setImagesUpload] = useState([]);
+  const [urlImages, setUrlImages] = useState([]);
   const [sentinal, setSetinal] = useState(0);
+
+  const handleChange = (e) => {
+    for (let i = 0; i < e.target.files.length; i++) {
+      const newImage = e.target.files[i];
+      newImage["id"] = i;
+      setImagesUpload((prevState) => [...prevState, newImage]);
+    }
+    //console.log(imagesUpload);
+  };
 
   let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
@@ -63,33 +72,44 @@ function AddProduct(props) {
 
   useEffect(() => {
     //console.log(imageUpload);
-    if (imageUpload != null && product != null) {
+    if (imagesUpload.length > 0 && product != null && sentinal == 0) {
+      imagesUpload.map((image) =>{
       //console.log("made it in");
       //Create reference for where to store image
-      const imageRef = ref(storage, `products/${product.product_id}/1.png`);
+      const imageRef = ref(storage, `products/${product.product_id}/${image.id}.png`);
       /*Used to upload an image to Firebase.
         Note uploaded images are public access */
-      uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        // async () => {
+      uploadBytes(imageRef, image).then((snapshot) => {
         //alert("Image Uploaded");
-        getDownloadURL(snapshot.ref).then((url) => {
-          setUrlImage(url);
-          //console.log(urlImage);
+        getDownloadURL(snapshot.ref).then((urls) => {
+          setUrlImages((prevState) => [...prevState, urls]);
+          // console.log("url:" + urls);
+          // console.log(urlImages);
         });
       });
+    // };
+      });
     }
-  }, [imageUpload, urlImage, product]);
+  }, [imagesUpload, urlImages, product]);
 
   useEffect(() => {
-    if (product != null && urlImage != null && sentinal == 0) {
-      const imageData = {
-        product_id: product.product_id,
-        image_order: 1,
-        image_location: urlImage,
-      };
-
-      setSetinal(1);
-
-      axios
+    if (product != null && urlImages.length > 0 && sentinal == 0) {
+    let count = 1;
+    const imageListRef = ref(storage, `products/${product.product_id}/`)
+    //Displays all images in path, if products and users have own folders by ID we can use this to display their image(s)
+    listAll(imageListRef).then((response) => {   
+        //To display images, for each file in reference folder:
+        response.items.forEach((item) => {
+            getDownloadURL(item).then((url) => {
+                //Update image list as array of image URLs
+                //uses "new Set()" to prevent duplicates caused by useEffect with listAll
+                const imageData = {
+                  product_id: product.product_id,
+                  image_order: count,
+                  image_location: url,
+                }
+                axios
         .post(`http://localhost:3001/product_images`, imageData)
         .then((response) => {
           console.log(response.data);
@@ -97,9 +117,42 @@ function AddProduct(props) {
         .catch((error) => {
           console.log(error);
         });
-      window.location.reload();
-    }
-  }, [product, urlImage]);
+        //alert("posted");
+        count++;
+            });
+        });
+    });
+      setSetinal(1);
+      //alert("out");
+      //window.location.reload();
+  }
+}, [product, urlImages]);
+
+//   useEffect(() => {
+//     if (product != null && urlImages.length > 0 && sentinal == 0) {
+//       for (let i = 0; i < urlImages.length; i++) {
+//         console.log("check one");
+//       const imageData = {
+//         product_id: product.product_id,
+//         image_order: i,
+//         image_location: urlImages[i],
+//       };
+//       axios
+//         .post(`http://localhost:3001/product_images`, imageData)
+//         .then((response) => {
+//           console.log(response.data);
+//         })
+//         .catch((error) => {
+//           console.log(error);
+//         });
+//         alert("posted");
+// };
+
+//       setSetinal(1);
+//       alert("out");
+//       window.location.reload();
+//     }
+//   }, [product, urlImages]);
 
   return (
 <>
@@ -178,17 +231,18 @@ function AddProduct(props) {
             required={true}
           />
         </div>
-        <div className="mt-2.5">
-          <label htmlFor="ProductImage"><br></br></label>
-          <FormInput
-            type="file"
-            name="ProductImage"
-            className="mt-2.5 rounded border border-solid border-stone-300 p-2 text-left"
-            onChange={(event) => {
-              setImageUpload(event.target.files[0]);
-            }}
-            required={true}
-          />
+        <FormInput
+              type="file"
+              placeholder="Product Image"
+              name="ProductImage"
+              className="box-border flex relative flex-col shrink-0 p-2.5 mt-5 mb-11 rounded border border-solid border-stone-300"
+              onChange={handleChange}
+              // onChange={(event) => {
+              //   setImagesUpload(event.target.files[0]);
+              // }}
+              multiple
+              required={true}
+            />
         </div>
         <br></br>
         <br></br>

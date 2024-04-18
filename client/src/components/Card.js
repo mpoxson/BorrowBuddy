@@ -207,7 +207,7 @@ function Card(props) {
             component="img"
             height="200"
             image={imageSingle.image_location}
-            alt="green iguana"
+            alt={props.props.product_name}
           />
           <CardContent sx={{ color: COLORS.PRIMARY }}>
             <Typography gutterBottom variant="h5" component="div">
