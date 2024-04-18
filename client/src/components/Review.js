@@ -2,6 +2,8 @@ import { Avatar, Paper, Rating, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import StarRateIcon from "@mui/icons-material/StarRate";
+import { Link } from "react-router-dom";
 
 const Review = (prop) => {
   const [rater, setRater] = useState(null);
@@ -24,21 +26,35 @@ const Review = (prop) => {
             {rater ? (
               <>
                 <Box marginX={"5px"} marginBottom={"10px"}>
-                  <Avatar
-                    src={rater.user_profile_picture}
-                    aria-label="Profile Pic"
-                  />
+                  <Link
+                    to={`/users/${prop.prop.user_rating_id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Avatar
+                      src={rater.user_profile_picture}
+                      aria-label="Profile Pic"
+                    />
+                  </Link>
                 </Box>
                 <Box>
-                  <Typography variant="h5">{rater.user_name}</Typography>
+                  <Link
+                    to={`/users/${prop.prop.user_rating_id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Typography variant="h5">{rater.user_name}</Typography>
+                  </Link>
                 </Box>
               </>
             ) : (
               <Typography>loading</Typography>
             )}
           </Box>
+
           <Rating
             name="rate"
+            emptyIcon={
+              <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
+            }
             value={prop.prop.rating_value}
             precision={0.5}
             readOnly
