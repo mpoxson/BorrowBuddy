@@ -20,7 +20,7 @@ const Pictures = ({ props }) => {
             src={image}
             key={image}
             alt="Test img"
-            style={{ width: "200px", height: "200px" }}
+            style={{ width: "75%", height: "75%" }}
           />
         </SwiperSlide>
       ))}
