@@ -109,8 +109,8 @@ function AddProduct(props) {
     <br></br>
     <br></br>
   </div>
-  <div className="box-border flex relative flex-col shrink-0 p-5 min-h-[100px]" style={{ maxWidth: 1200 }}>
-    <section className="box-border flex relative flex-col grow shrink-0 self-stretch p-5 mx-auto w-full max-w-[1200px] min-h-[100px]" style={{ paddingLeft: '150px', paddingRight: '150px' }}>
+  <div className="box-border relative shrink-0 mx-auto mt-5 mb-36 h-auto" >
+    <section className="box-border flex relative flex-col grow shrink-0 self-stretch p-5 mx-auto w-full max-w-[1200px] min-h-[100px]" style={{ paddingLeft: '150px', paddingRight: '150px'}}>
       <Form onSubmit={handleOnSubmit}>
         <div className="mt-2.5">
           <label htmlFor="ProductName"><br></br></label>
