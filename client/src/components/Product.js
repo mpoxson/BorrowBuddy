@@ -21,6 +21,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Rate from "./Rate";
 import Rating from "@mui/material/Rating";
+import { Link } from "react-router-dom"; 
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -247,10 +248,12 @@ const handleMessageClick = async () => {
             <Grid xs={2}>
               <Box sx={{ display: "flex" }}>
                 <Box marginY={"auto"}>
-                  <Avatar
+                  <Link to={`/users/${product.owner_id}`} style={{ textDecoration: 'none' }}>
+                    <Avatar
                     src={user.user_profile_picture}
                     aria-label="Profile Pic"
-                  />
+                    />
+                  </Link>
                 </Box>
                 <Box marginLeft={"20px"} marginRight={"-20px"} marginY={"auto"}>
                   <Typography>{user.user_name}</Typography>
