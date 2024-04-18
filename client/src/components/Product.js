@@ -22,7 +22,8 @@ import dayjs from "dayjs";
 import Rate from "./Rate";
 import Rating from "@mui/material/Rating";
 import Edit from "./Edit";
-import StarRateIcon from '@mui/icons-material/StarRate';
+import StarRateIcon from "@mui/icons-material/StarRate";
+import { Link } from "react-router-dom";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -56,7 +57,7 @@ const Product = () => {
     axios
       .get(`http://localhost:3001/products/${productId}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setProduct(response.data);
       });
   }, [refreshData]);
@@ -64,7 +65,7 @@ const Product = () => {
     axios
       .get(`http://localhost:3001/product_rentals/product/active/${productId}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setRental(response.data);
       });
   }, [productId]);
@@ -73,7 +74,7 @@ const Product = () => {
       axios
         .get(`http://localhost:3001/users/${product.owner_id}`)
         .then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           setUser(response.data);
         });
       axios
@@ -175,6 +176,28 @@ const Product = () => {
     rental: rental[0],
   };
 
+  const handleMessageClick = async () => {
+    try {
+      const data = {
+        product_id: productId,
+        user_id1: curr_user,
+        user_id2: user.user_id,
+      };
+
+      const response = await axios.post(
+        "http://localhost:3001/Conversations",
+        data
+      );
+
+      const conversationId = response.data.ConversationID;
+      const messageUrl = `http://localhost:3000/Messages/${conversationId}`;
+
+      window.location.href = messageUrl;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Container
       maxWidth="xxl"
@@ -204,24 +227,32 @@ const Product = () => {
             <Grid xs={2}>
               <Box sx={{ display: "flex" }}>
                 <Box marginY={"auto"}>
-                  <Avatar
-                    src={user.user_profile_picture}
-                    aria-label="Profile Pic"
-                  />
+                  <Link
+                    to={`/users/${product.owner_id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Avatar
+                      src={user.user_profile_picture}
+                      aria-label="Profile Pic"
+                    />
+                  </Link>
                 </Box>
                 <Box marginLeft={"20px"} marginRight={"-20px"} marginY={"auto"}>
                   <Typography>{user.user_name}</Typography>
                   <Box>
                     <Typography>{user.user_city}</Typography>
                     <Rating
-              name="rate"
-              emptyIcon={
-                <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
-              }
-              value={ratings}
-              precision={0.5}
-              readOnly
-            />
+                      name="rate"
+                      emptyIcon={
+                        <StarRateIcon
+                          sx={{ color: "#4a4943" }}
+                          fontSize="inherit"
+                        />
+                      }
+                      value={ratings}
+                      precision={0.5}
+                      readOnly
+                    />
                   </Box>
                 </Box>
               </Box>
@@ -261,18 +292,33 @@ const Product = () => {
                     Edit
                   </Button>
                 ) : (
-                  <Button
-                    sx={{
-                      marginTop: "5px",
-                      color: COLORS.SECONDARY,
-                      borderColor: COLORS.SECONDARY,
-                    }}
-                    variant="outlined"
-                    onClick={handleOpenRate}
-                    disabled={!ratable}
-                  >
-                    Rate
-                  </Button>
+                  <>
+                    <Button
+                      sx={{
+                        marginTop: "5px",
+                        color: COLORS.SECONDARY,
+                        borderColor: COLORS.SECONDARY,
+                      }}
+                      variant="outlined"
+                      onClick={handleOpenRate}
+                      disabled={!ratable}
+                    >
+                      Rate
+                    </Button>
+
+                    <Button
+                      sx={{
+                        marginTop: "10px",
+                        marginLeft: "15px",
+                        color: COLORS.SECONDARY,
+                        borderColor: COLORS.SECONDARY,
+                      }}
+                      variant="outlined"
+                      onClick={handleMessageClick} // Add onClick event handler
+                    >
+                      Message
+                    </Button>
+                  </>
                 )}
                 <Modal
                   open={openEdit}
@@ -345,7 +391,7 @@ const Product = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%", marginY: "7px" }}
-                label="Start:"
+                label="End:"
                 readOnly
                 defaultValue={dayjs(
                   product.product_available_end_time.slice(0, 10)

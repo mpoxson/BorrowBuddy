@@ -73,4 +73,42 @@ router.post("/", async (req, res) => {
   res.json(rating);
 }); //This is for frontend
 
+//update rate
+router.put("/:ratedId", async (req, res) => {
+  const ratedId = req.params.ratedId;
+
+  try {
+    const rate = await ratings.findByPk(ratedId);
+    if (!rate) {
+      return res.status(404).json({ message: "rate id not found" });
+    }
+
+    // Update rate fields based on the request body
+    await rate.update(req.body);
+
+    res.json({ message: "User rate updated successfully" });
+  } catch (error) {
+    console.error("Error updating user rate:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.delete("/:ratedId", async (req, res) => {
+  const ratedId = req.params.ratedId;
+
+  try {
+    const rate = await ratings.findByPk(ratedId);
+    if (!rate) {
+      return res.status(404).json({ message: "rate id not found" });
+    }
+
+    // Delete the rate
+    await rate.destroy();
+
+    res.json({ message: "user rate deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user rate:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 module.exports = router;

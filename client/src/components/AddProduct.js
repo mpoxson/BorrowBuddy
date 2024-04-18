@@ -102,85 +102,102 @@ function AddProduct(props) {
   }, [product, urlImage]);
 
   return (
-    <>
-      <div className="box-border relative shrink-0 mx-auto mt-5 mb-36 h-auto">
-        <h1>Add A Product</h1>
-      </div>
-      <div
-        className="box-border flex relative flex-col shrink-0 p-5 min-h-[100px]"
-        maxWidth={1200}
-        lazyLoad={false}
-      >
-        <section className="box-border flex relative flex-col grow shrink-0 self-stretch p-5 mx-auto w-full max-w-[1200px] min-h-[100px]">
-          <Form onSubmit={handleOnSubmit}>
-            <div className="mt-2.5">
-              <p>Enter Product Name</p>
-            </div>
-            <FormInput
-              type="text"
-              name="ProductName"
-              onChange={(e) => setProductName(e.target.value)}
-              placeholder="Product Name"
-              className="mt-2.5"
-              required={true}
-            />
-            <FormInput
-              type="text"
-              name="product_available_start_time"
-              onChange={(e) => setproduct_available_start_time(e.target.value)}
-              placeholder="Product Available Start Time (YYYY-MM-DD)"
-              className="mt-2.5"
-              required={true}
-            />
-            <FormInput
-              type="text"
-              name="product_available_end_time"
-              onChange={(e) => setproduct_available_end_time(e.target.value)}
-              placeholder="Product Available End Time (YYYY-MM-DD)"
-              className="mt-2.5"
-              required={true}
-            />
-            <FormInput
-              type="file"
-              placeholder="Product Image"
-              name="ProductImage"
-              className="box-border flex relative flex-col shrink-0 p-2.5 mt-5 mb-11 rounded border border-solid border-stone-300"
-              onChange={(event) => {
-                setImageUpload(event.target.files[0]);
-              }}
-              required={true}
-            />
-            <FormInput
-              type="text"
-              placeholder="Product Description"
-              onChange={(e) => setProductDescription(e.target.value)}
-              name="ProductDesciption"
-              className="box-border flex relative flex-col shrink-0 p-2.5 mt-11 rounded border border-solid border-stone-300"
-              required={true}
-            />
-            <div className="mt-2.5">
-              <p>Enter Product Price</p>
-            </div>
-            <FormInput
-              name="Product Price"
-              placeholder="Product Price in Dollars (per day)"
-              onChange={(e) => setProductPrice(e.target.value)}
-              type="text"
-              className="mt-2.5"
-              required={true}
-            />
-            <FormInput
-              name="Category"
-              className="box-border flex relative flex-col shrink-0 self-start mt-5"
-              placeholder="product category"
-              onChange={(e) => setProductCategory(e.target.value)}
-              required
-            />
-            <Button className="mt-2.5">Submit</Button>
-          </Form>
-        </section>
-      </div>
-    </>
+<>
+  <div className="box-border relative shrink-0 mx-auto mt-5 mb-36 h-auto">
+    <br></br>
+    <h1>Add A Product</h1>
+    <br></br>
+    <br></br>
+  </div>
+  <div className="box-border relative shrink-0 mx-auto mt-5 mb-36 h-auto" >
+    <section className="box-border flex relative flex-col grow shrink-0 self-stretch p-5 mx-auto w-full max-w-[1200px] min-h-[100px]" style={{ paddingLeft: '150px', paddingRight: '150px'}}>
+      <Form onSubmit={handleOnSubmit}>
+        <div className="mt-2.5">
+          <label htmlFor="ProductName"><br></br></label>
+          <FormInput
+            type="text"
+            name="ProductName"
+            onChange={(e) => setProductName(e.target.value)}
+            placeholder="Product Name"
+            className="mt-2.5 rounded border border-solid border-stone-300 p-2 text-left"
+            required={true}
+          />
+        </div>
+        <div className="mt-2.5">
+          <label htmlFor="product_available_start_time"><br></br></label>
+          <FormInput
+            type="text"
+            name="product_available_start_time"
+            onChange={(e) => setproduct_available_start_time(e.target.value)}
+            placeholder="YYYY-MM-DD"
+            className="mt-2.5 rounded border border-solid border-stone-300 p-2 text-left"
+            required={true}
+          />
+        </div>
+        <div className="mt-2.5">
+          <label htmlFor="product_available_end_time"><br></br></label>
+          <FormInput
+            type="text"
+            name="product_available_end_time"
+            onChange={(e) => setproduct_available_end_time(e.target.value)}
+            placeholder="YYYY-MM-DD"
+            className="mt-2.5 rounded border border-solid border-stone-300 p-2 text-left"
+            required={true}
+          />
+        </div>
+        <div className="mt-2.5">
+          <label htmlFor="ProductDesciption"><br></br></label>
+          <FormInput
+            type="text"
+            name="ProductDesciption"
+            onChange={(e) => setProductDescription(e.target.value)}
+            placeholder="Product Description"
+            className="mt-2.5 rounded border border-solid border-stone-300 p-2 text-left"
+            required={true}
+          />
+        </div>
+        <div className="mt-2.5">
+          <label htmlFor="ProductPrice"><br></br></label>
+          <FormInput
+            type="text"
+            name="ProductPrice"
+            onChange={(e) => setProductPrice(e.target.value)}
+            placeholder="Product Price"
+            className="mt-2.5 rounded border border-solid border-stone-300 p-2 text-left"
+            required={true}
+          />
+        </div>
+        <div className="mt-2.5">
+          <label htmlFor="Category"><br></br></label>
+          <FormInput
+            type="text"
+            name="Category"
+            onChange={(e) => setProductCategory(e.target.value)}
+            placeholder="Product Category"
+            className="mt-2.5 rounded border border-solid border-stone-300 p-2 text-left"
+            required={true}
+          />
+        </div>
+        <div className="mt-2.5">
+          <label htmlFor="ProductImage"><br></br></label>
+          <FormInput
+            type="file"
+            name="ProductImage"
+            className="mt-2.5 rounded border border-solid border-stone-300 p-2 text-left"
+            onChange={(event) => {
+              setImageUpload(event.target.files[0]);
+            }}
+            required={true}
+          />
+        </div>
+        <br></br>
+        <br></br>
+        <Button className="mt-5 rounded-lg bg-blue-500 text-white px-5 py-2 hover:bg-blue-600">Submit</Button>
+      </Form>
+    </section>
+  </div>
+</>
+
   );
 }
 
