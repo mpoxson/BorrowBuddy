@@ -12,6 +12,7 @@ import { Divider } from "semantic-ui-react";
 import axios from "axios";
 import Modal from "@mui/material/Modal";
 import ManageRentals from "./ManageRentals";
+import PastRentals from "./PastRentals";
 import { storage } from "../firebase/config";
 import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
@@ -19,6 +20,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import Rate from "./Rate";
+import Rating from "@mui/material/Rating";
+import Edit from "./Edit";
+import StarRateIcon from "@mui/icons-material/StarRate";
+import { Link } from "react-router-dom";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -26,26 +32,35 @@ const Product = () => {
   const [user, setUser] = useState(null);
   const [refreshData, setRefreshData] = useState(true);
   const [imageAva, setImageAva] = useState([]);
-  const [edit, setEdit] = useState(true);
   let { productId } = useParams();
   const [error, setError] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setcategory] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [ratings, setRatings] = useState(null);
+  const [ratable, setRatable] = useState(false);
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const [openRate, setRateOpen] = React.useState(false);
+  const handleOpenRate = () => setRateOpen(true);
+  const handleCloseRate = () => setRateOpen(false);
+
+  const [openEdit, setEditOpen] = React.useState(false);
+  const handleOpenEdit = () => setEditOpen(true);
+  const handleCloseEdit = () => setEditOpen(false);
+
   //For page displaying images
   const [imageList, setImageList] = useState([]);
+  //Displaying rentals
+  const [rentalList, setRentalList] = useState([]);
+
+  let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
 
   useEffect(() => {
     axios
       .get(`http://localhost:3001/products/${productId}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setProduct(response.data);
       });
   }, [refreshData]);
@@ -53,7 +68,7 @@ const Product = () => {
     axios
       .get(`http://localhost:3001/product_rentals/product/active/${productId}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setRental(response.data);
       });
   }, [productId]);
@@ -62,13 +77,27 @@ const Product = () => {
       axios
         .get(`http://localhost:3001/users/${product.owner_id}`)
         .then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           setUser(response.data);
         });
-      setDescription(product.product_description);
-      setStart(product.product_available_start_time.slice(0, 10));
-      setEnd(product.product_available_end_time.slice(0, 10));
-      setcategory(product.product_category);
+      axios
+        .get(`http://localhost:3001/ratings/avg/${product.owner_id}`)
+        .then((response) => {
+          console.log(response.data);
+          setRatings(response.data.average_rating);
+        });
+      if (curr_user != product.owner_id) {
+        axios
+          .get(
+            `http://localhost:3001/ratings/rated/${product.owner_id}/${curr_user}`
+          )
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.length == 0) {
+              setRatable(true);
+            }
+          });
+      }
     }
   }, [product]);
   //Create an array of image URLs from the product_images associated with product
@@ -87,6 +116,15 @@ const Product = () => {
       });
   }, [productId]);
 
+  //Create an array of rentals from the product_rentals associated with product
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/product_rentals/inactive/${productId}`)
+      .then(res => setRentalList(res.data))
+      .catch(err => console.log(err))
+
+  }, [productId]);
+
   if (!product) {
     return <div>Loading...</div>;
   }
@@ -101,11 +139,11 @@ const Product = () => {
 
   //const img_array = [img, img, img];
 
-  let curr_user = JSON.parse(localStorage.getItem("user"))["user_id"];
-
   const handleReserve = async () => {
     try {
-      setRefreshData(!refreshData);
+      //const response = await axios.get('your_api_endpoint');
+      //const latestData = response.data;
+
       if (product.product_is_rented.toLowerCase() == "yes") {
         return alert("Product already rented!");
       }
@@ -150,24 +188,25 @@ const Product = () => {
     rental: rental[0],
   };
 
-  const handleEdits = async () => {
+  const handleMessageClick = async () => {
     try {
-      let updates = product;
+      const data = {
+        product_id: productId,
+        user_id1: curr_user,
+        user_id2: user.user_id,
+      };
 
-      updates.product_description = description;
-      updates.product_category = category;
-      updates.product_available_start_time = start;
-      updates.product_available_end_time = end;
+      const response = await axios.post(
+        "http://localhost:3001/Conversations",
+        data
+      );
 
-      console.log(updates);
+      const conversationId = response.data.ConversationID;
+      const messageUrl = `http://localhost:3000/Messages/${conversationId}`;
 
-      //Check if is rented is still no first
-      //set is rented before making product rental
-      await axios.put(`http://localhost:3001/products/${productId}`, updates);
-      window.location.reload();
+      window.location.href = messageUrl;
     } catch (error) {
-      // Error handling code remains the same
-      console.log("errored out: " + error);
+      console.log(error);
     }
   };
 
@@ -200,16 +239,32 @@ const Product = () => {
             <Grid xs={2}>
               <Box sx={{ display: "flex" }}>
                 <Box marginY={"auto"}>
-                  <Avatar
-                    src={user.user_profile_picture}
-                    aria-label="Profile Pic"
-                  />
+                  <Link
+                    to={`/users/${product.owner_id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Avatar
+                      src={user.user_profile_picture}
+                      aria-label="Profile Pic"
+                    />
+                  </Link>
                 </Box>
                 <Box marginLeft={"20px"} marginRight={"-20px"} marginY={"auto"}>
                   <Typography>{user.user_name}</Typography>
                   <Box>
                     <Typography>{user.user_city}</Typography>
-                    <Typography>4.5/5</Typography>
+                    <Rating
+                      name="rate"
+                      emptyIcon={
+                        <StarRateIcon
+                          sx={{ color: "#4a4943" }}
+                          fontSize="inherit"
+                        />
+                      }
+                      value={ratings}
+                      precision={0.5}
+                      readOnly
+                    />
                   </Box>
                 </Box>
               </Box>
@@ -228,9 +283,9 @@ const Product = () => {
                   >
                     <Typography>${product.product_price}/Day</Typography>
                   </Box>
-                  <Box color={COLORS.ACCENT}>
+                  {/* <Box color={COLORS.ACCENT}>
                     <Typography>100 previous rents</Typography>
-                  </Box>
+                  </Box> */}
                 </Box>
               </Box>
             </Grid>
@@ -244,24 +299,55 @@ const Product = () => {
                       borderColor: COLORS.SECONDARY,
                     }}
                     variant="outlined"
-                    onClick={() => {
-                      setEdit(false);
-                    }}
+                    onClick={handleOpenEdit}
                   >
                     Edit
                   </Button>
                 ) : (
-                  <Button
-                    sx={{
-                      marginTop: "5px",
-                      color: COLORS.SECONDARY,
-                      borderColor: COLORS.SECONDARY,
-                    }}
-                    variant="outlined"
-                  >
-                    Rate
-                  </Button>
+                  <>
+                    <Button
+                      sx={{
+                        marginTop: "5px",
+                        color: COLORS.SECONDARY,
+                        borderColor: COLORS.SECONDARY,
+                      }}
+                      variant="outlined"
+                      onClick={handleOpenRate}
+                      disabled={!ratable}
+                    >
+                      Rate
+                    </Button>
+
+                    <Button
+                      sx={{
+                        marginTop: "10px",
+                        marginLeft: "15px",
+                        color: COLORS.SECONDARY,
+                        borderColor: COLORS.SECONDARY,
+                      }}
+                      variant="outlined"
+                      onClick={handleMessageClick} // Add onClick event handler
+                    >
+                      Message
+                    </Button>
+                  </>
                 )}
+                <Modal
+                  open={openEdit}
+                  onClose={handleCloseEdit}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Edit props={product} />
+                </Modal>
+                <Modal
+                  open={openRate}
+                  onClose={handleCloseRate}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Rate props={user} />
+                </Modal>
               </Box>
             </Grid>
           </Grid>
@@ -282,15 +368,12 @@ const Product = () => {
               sx={{ marginTop: "9px" }}
               variant="filled"
               InputProps={{
-                readOnly: edit,
+                readOnly: true,
               }}
               fullWidth
               multiline
               minRows={6}
-              defaultValue={description}
-              onChange={(event) => {
-                setDescription(event.target.value);
-              }}
+              defaultValue={product.product_description}
             />
           </Box>
           <Box
@@ -302,34 +385,29 @@ const Product = () => {
             <TextField
               fullWidth
               InputProps={{
-                readOnly: edit,
+                readOnly: true,
               }}
               label="Category: "
-              defaultValue={category}
-              onChange={(event) => {
-                setcategory(event.target.value);
-              }}
+              defaultValue={product.product_category}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%", marginY: "7px" }}
                 label="Start:"
-                readOnly={edit}
-                defaultValue={dayjs(start)}
-                onChange={(newValue) => {
-                  setStart(newValue.toDate());
-                }}
+                readOnly={true}
+                defaultValue={dayjs(
+                  product.product_available_start_time.slice(0, 10)
+                )}
               />
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%", marginY: "7px" }}
-                label="Start:"
-                readOnly={edit}
-                defaultValue={dayjs(end)}
-                onChange={(newValue) => {
-                  setEnd(newValue.toDate());
-                }}
+                label="End:"
+                readOnly
+                defaultValue={dayjs(
+                  product.product_available_end_time.slice(0, 10)
+                )}
               />
             </LocalizationProvider>
           </Box>
@@ -354,13 +432,6 @@ const Product = () => {
           >
             <ManageRentals props={props} />
           </Modal>
-          {edit == false ? (
-            <Button variant="contained" onClick={handleEdits}>
-              Submit Changes
-            </Button>
-          ) : (
-            ""
-          )}
         </Box>
         <Box width={"100%"} display={"flex"} justifyContent={"right"}>
           {rental[0] || product.owner_id == curr_user ? (
@@ -374,6 +445,20 @@ const Product = () => {
           )}
         </Box>
       </Box>
+
+      {/* Past rentals box */}
+      {/* <Paper sx={{ marginTop: "10px" }} elevation={3}>
+        <Typography
+          variant="h5"
+          sx={{ paddingTop: "5px", marginBottom: "-5px" }}
+        >
+          Past Rentals
+        </Typography>
+        <Divider />
+        <Box width={"98%"} display="flex" justifyContent="center">
+          <PastRentals props={rentalList} />
+        </Box>
+      </Paper> */}
 
       {/* Box for comments */}
       {/* Put all this in a map for each comment of a certain product */}

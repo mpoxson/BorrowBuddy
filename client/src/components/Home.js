@@ -11,6 +11,7 @@ import {
   TextField,
   Button,
   IconButton,
+  Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu"; // Material-UI icon for menu
 
@@ -40,7 +41,7 @@ const Home = () => {
     let userId = JSON.parse(localStorage.getItem("user"))["user_id"];
 
     if (checkbox === "saved") {
-      endpoint = "/product_saves";
+      endpoint = "/product_saves/user/" + userId;
     } else if (checkbox === "rentals") {
       endpoint = "/product_rentals/user/active/" + userId;
     }
@@ -208,7 +209,14 @@ const Home = () => {
       >
         <SearchBar setSearchQuery={setSearchQuery} />
         {filteredProduct.map((value) => (
-          <Card key={value.product_id} props={value} />
+          <Box
+            width={"auto"}
+            height={"auto"}
+            display={"inline"}
+            marginX={"10px"}
+          >
+            <Card key={value.product_id} props={value} />
+          </Box>
         ))}
       </div>
     </div>
