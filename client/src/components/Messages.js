@@ -97,10 +97,11 @@ const Messages = () => {
               mt={1}
             >
               <Box
-                bgcolor={message.SenderID === user.user_id ? "primary.main" : "background.paper"}
+                bgcolor={message.SenderID === user.user_id ? "primary.main" : "#F7F3EE5"} // Set background color to white for recipient's messages
                 color={message.SenderID === user.user_id ? "primary.contrastText" : "text.primary"}
                 p={1}
                 borderRadius={8}
+                boxShadow={"0px 0px 10px rgba(0, 0, 0, 0.2)"} // Add shadow for recipient's messages
               >
                 <Typography variant="body1">{message.MessageText}</Typography>
               </Box>

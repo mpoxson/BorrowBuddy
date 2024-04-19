@@ -5,11 +5,40 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; 
 import '../css/RegisterStyles.css';
 import bcrypt from 'bcryptjs'; 
+import { storage } from "../firebase/config";
+import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+import { v4 } from 'uuid';
 
 const Register = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate(); 
+  const [imageUpload, setImageUpload] = useState(null);
+  //Wasn't getting setImageUrl(url) to work inside uploadImage function, for whatever reason. So I'm using imageUrl2 variable.
+  const [imageUrl, setImageUrl] = useState(null);
+  let imageUrl2 = 'https://firebasestorage.googleapis.com/v0/b/borrowbuddy-794c1.appspot.com/o/userAvatars%2Fdefault.png?alt=media&token=6d92169e-78b8-4be5-8493-b5459ae0423e';
 
+
+  const uploadImage = async () => {
+    return new Promise((resolve, reject) => {
+    if (imageUpload == null) { resolve(imageUrl); }
+    else {
+    //Create reference for where to store image
+    const imageRef = ref(storage, `userAvatars/initial/${imageUpload.name + v4()}`);
+    /*Used to upload an image to Firebase.
+            Note uploaded images are public access */
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      //alert("Image Uploaded");
+      getDownloadURL(snapshot.ref).then((url) => {
+        imageUrl2 = url;
+        resolve(url);
+      })
+      .catch(reject);
+    })
+    .catch(reject);
+  }
+  });
+  };
+  
   const validationSchema = Yup.object().shape({
     user_name: Yup.string().required('Name is required'),
     user_state: Yup.string().required('State is required'),
@@ -29,16 +58,27 @@ const Register = () => {
     try {
       // Hash the password
       const hashedPassword = await bcrypt.hash(values.user_password, 10); // 10 is the salt rounds
-
       // Replace the plain text password with hashed password
       const data = { ...values, user_password: hashedPassword };
-
+      //console.log('past hash change...');
       await axios.post('http://localhost:3001/users', data);
       navigate('/login'); // Redirect to login page after successful registration
     } catch (error) {
       // Error handling code remains the same
     }
   };
+
+    //wrapper function for both uploadImage and handleUpdate on clicking Submit button
+    const wrapperFunction = async (values, setSubmitting) => {
+      try {
+        await uploadImage(); // Wait for uploadImage to finish
+        // console.log('Are we out');
+        // alert(imageUrl2);
+        await handleSubmit({ ...values, user_profile_picture: imageUrl2 }, { setSubmitting }); // Then, wait for handleSubmit to finish
+      } catch (error) {
+        // Error handling code remains the same
+      }
+    };
 
   return (
     <div className="register-container">
@@ -57,7 +97,7 @@ const Register = () => {
           user_password: '',
         }}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
+        onSubmit={(values, { setSubmitting }) => wrapperFunction(values, setSubmitting)}
       >
         {({ isSubmitting }) => (
           <Form>
@@ -103,9 +143,9 @@ const Register = () => {
             </div>
             {/* this profile_picture may need submit a image, we may need change the type*/}
             {/*Current solution is set default value to default.jpg in firebase and hide form element, then if user wants to change pic, they can edit it later*/}
-            <div className="form-group" hidden>
+            <div className="form-group">
               <label htmlFor="user_profile_picture">Profile Picture:</label>
-              <Field type="text" name="user_profile_picture" />
+              <input type="file" name="user_profile_picture" onChange={(event) => {setImageUpload(event.target.files[0]);}}/>
               <ErrorMessage name="user_profile_picture" component="div" className="error-message" />
             </div>
             <div className="form-group">
@@ -120,6 +160,7 @@ const Register = () => {
             <div className="login-link">
               <span>Already have an account? <Link to="/login">Log in</Link></span>
             </div>
+            
           </Form>
         )}
       </Formik>
