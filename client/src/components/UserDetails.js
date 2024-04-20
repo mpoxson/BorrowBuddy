@@ -7,16 +7,19 @@ import {
   Avatar,
   CircularProgress,
   Button,
+  Rating,
 } from "@mui/material";
 import Card from "./Card";
 import Feedback from "./Feedback";
 import Modal from "@mui/material/Modal";
 import { COLORS } from "../constants/enums";
+import StarRateIcon from "@mui/icons-material/StarRate";
 
 const UserDetails = () => {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]); // State to store user's products
   const { userId } = useParams();
+  const [ratings, setRatings] = useState(null);
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -41,6 +44,12 @@ const UserDetails = () => {
       })
       .catch((error) => {
         console.error("Error fetching user products:", error);
+      });
+    axios
+      .get(`http://localhost:3001/ratings/avg/${userId}`)
+      .then((response) => {
+        console.log(response.data);
+        setRatings(response.data.average_rating);
       });
   }, [userId]);
 
@@ -88,6 +97,15 @@ const UserDetails = () => {
         <Typography variant="subtitle1" gutterBottom>
           User Profile: {user.user_profile}
         </Typography>
+        <Rating
+          name="rate"
+          emptyIcon={
+            <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
+          }
+          value={ratings}
+          precision={0.5}
+          readOnly
+        />
       </Container>
 
       <Button
@@ -109,7 +127,6 @@ const UserDetails = () => {
       >
         <Feedback />
       </Modal>
-
       <div
         style={{
           marginTop: "50px",

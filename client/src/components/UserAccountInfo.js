@@ -1,21 +1,58 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Button, Card, CardContent, CardHeader, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CardContent,
+  CardHeader,
+  Card,
+  Paper,
+  TextField,
+  Typography,
+  Rating,
+} from "@mui/material";
 import "../App.css";
 import { storage } from "../firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Ratings from "./Ratings";
+import { default as OurCard } from "./Card";
+import StarRateIcon from "@mui/icons-material/StarRate";
 
 const TestUsersList = () => {
   const [user, setUser] = useState(null);
   const [editableFields, setEditableFields] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [ratings, setRatings] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    axios
+      .get(
+        `http://localhost:3001/products/userDetail/${
+          JSON.parse(localStorage.getItem("user"))["user_id"]
+        }`
+      )
+      .then((response) => {
+        setProducts(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user products:", error);
+      });
+    axios
+      .get(
+        `http://localhost:3001/ratings/avg/${
+          JSON.parse(localStorage.getItem("user"))["user_id"]
+        }`
+      )
+      .then((response) => {
+        console.log(response.data);
+        setRatings(response.data.average_rating);
+      });
   }, []);
 
   const handleEdit = () => {
@@ -90,25 +127,33 @@ const TestUsersList = () => {
   return (
     <Box m={8}>
       <Card variant="outlined">
-        <CardHeader 
+        <CardHeader
           title="Basic Information"
           action={
             <Box display="flex" justifyContent="flex-end">
               {isEditing ? (
-                <Button onClick={wrapperFunction} variant="contained" color="primary">
+                <Button
+                  onClick={wrapperFunction}
+                  variant="contained"
+                  color="primary"
+                >
                   Update
                 </Button>
               ) : (
-                <Button onClick={handleEdit} variant="contained" color="primary">
+                <Button
+                  onClick={handleEdit}
+                  variant="contained"
+                  color="primary"
+                >
                   Edit
                 </Button>
               )}
             </Box>
           }
-          />   
+        />
         <CardContent>
           {user ? (
-            <div>  
+            <div>
               <form>
                 <TextField
                   label="Name"
@@ -215,15 +260,40 @@ const TestUsersList = () => {
         </CardContent>
       </Card>
       <Box mt={8}>
-        <Card variant="outlined">
-          <CardHeader title="Rating" />
-            <CardContent>
-                
-              <Ratings props={JSON.parse(localStorage.getItem("user"))["user_id"]} />
-            </CardContent>
-        </Card>
+        <Rating
+          name="rate"
+          emptyIcon={
+            <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
+          }
+          value={ratings}
+          precision={0.5}
+          readOnly
+        />
+        <Ratings props={JSON.parse(localStorage.getItem("user"))["user_id"]} />
       </Box>
-
+      <div
+        style={{
+          marginTop: "50px",
+          border: "0px solid #ccc",
+          borderRadius: "8px",
+          padding: "20px",
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          Here is all my product information:
+        </Typography>
+        {/* Map through the user's products and render the user product card component */}
+        {products.map((product) => (
+          <Box
+            width={"auto"}
+            height={"auto"}
+            display={"inline"}
+            marginX={"10px"}
+          >
+            <OurCard props={product} />
+          </Box>
+        ))}
+      </div>
     </Box>
   );
 };
