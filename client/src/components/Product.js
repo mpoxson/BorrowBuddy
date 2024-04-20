@@ -24,6 +24,7 @@ import Rating from "@mui/material/Rating";
 import Edit from "./Edit";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import { Link } from "react-router-dom";
+import Ratings from "./Ratings";
 
 const Product = () => {
   const [product, setProduct] = useState(null);
@@ -206,6 +207,7 @@ const Product = () => {
         display: "block",
         justifyContent: "center",
         backgroundColor: COLORS.SECONDARY,
+        paddingBottom: "10px",
       }}
     >
       {/* Box for product info */}
@@ -436,18 +438,9 @@ const Product = () => {
 
       {/* Box for comments */}
       {/* Put all this in a map for each comment of a certain product */}
-      <Paper sx={{ marginTop: "10px" }} elevation={3}>
-        <Typography
-          variant="h5"
-          sx={{ paddingTop: "5px", marginBottom: "-5px" }}
-        >
-          Comments
-        </Typography>
-        <Divider />
-        <Box width={"98%"} display="flex" justifyContent="center">
-          <Comments />
-        </Box>
-      </Paper>
+      <Box marginTop={"7px"}>
+        <Ratings props={product.owner_id} />
+      </Box>
     </Container>
   );
 };

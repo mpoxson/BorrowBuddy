@@ -17,7 +17,7 @@ import { v4 } from "uuid";
 import testImage from "../image/test.jpg";
 import Rating from "@mui/material/Rating";
 import { Link } from "react-router-dom";
-import StarRateIcon from '@mui/icons-material/StarRate';
+import StarRateIcon from "@mui/icons-material/StarRate";
 
 function Card(props) {
   const [saved, setSaved] = useState(false);
@@ -151,56 +151,100 @@ function Card(props) {
           borderColor: COLORS.ACCENT,
         }}
       >
-        <CardHeader
-          sx={{
-            backgroundColor: COLORS.PRIMARY,
-            color: COLORS.SECONDARY,
-          }}
-          //handle images
-          avatar={
-            <Link
-              to={`users/${props.props.owner_id}`}
-              style={{ textDecoration: "none" }}
-            >
+        {props.props.owner_id !=
+        JSON.parse(localStorage.getItem("user"))["user_id"] ? (
+          <CardHeader
+            sx={{
+              backgroundColor: COLORS.PRIMARY,
+              color: COLORS.SECONDARY,
+            }}
+            //handle images
+            avatar={
+              <Link
+                to={`users/${props.props.owner_id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Avatar
+                  src={userName.user_profile_picture}
+                  aria-label="Profile Pic"
+                />
+              </Link>
+            }
+            action={
+              <Tooltip title="Save" disableInteractive arrow>
+                <IconButton aria-label="Save" onClick={handleSave}>
+                  {saved === false ? (
+                    <BookmarkAddIcon color="secondary" fontSize="small" />
+                  ) : (
+                    <BookmarkRemoveIcon color="accent" fontSize="small" />
+                  )}
+                </IconButton>
+              </Tooltip>
+            }
+            title={
+              <Link
+                to={`users/${props.props.owner_id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Typography color={COLORS.SECONDARY} variant="h6">
+                  {userName.user_name}
+                </Typography>
+              </Link>
+            }
+            subheader={
+              <Rating
+                name="rate"
+                emptyIcon={
+                  <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
+                }
+                value={ratings}
+                precision={0.5}
+                readOnly
+              />
+            }
+          />
+        ) : (
+          <CardHeader
+            sx={{
+              backgroundColor: COLORS.PRIMARY,
+              color: COLORS.SECONDARY,
+            }}
+            //handle images
+            avatar={
               <Avatar
                 src={userName.user_profile_picture}
                 aria-label="Profile Pic"
               />
-            </Link>
-          }
-          action={
-            <Tooltip title="Save" disableInteractive arrow>
-              <IconButton aria-label="Save" onClick={handleSave}>
-                {saved === false ? (
-                  <BookmarkAddIcon color="secondary" fontSize="small" />
-                ) : (
-                  <BookmarkRemoveIcon color="accent" fontSize="small" />
-                )}
-              </IconButton>
-            </Tooltip>
-          }
-          title={
-            <Link
-              to={`users/${props.props.owner_id}`}
-              style={{ textDecoration: "none" }}
-            >
+            }
+            action={
+              <Tooltip title="Save" disableInteractive arrow>
+                <IconButton aria-label="Save" onClick={handleSave}>
+                  {saved === false ? (
+                    <BookmarkAddIcon color="secondary" fontSize="small" />
+                  ) : (
+                    <BookmarkRemoveIcon color="accent" fontSize="small" />
+                  )}
+                </IconButton>
+              </Tooltip>
+            }
+            title={
               <Typography color={COLORS.SECONDARY} variant="h6">
                 {userName.user_name}
               </Typography>
-            </Link>
-          }
-          subheader={
-            <Rating
-              name="rate"
-              emptyIcon={
-                <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
-              }
-              value={ratings}
-              precision={0.5}
-              readOnly
-            />
-          }
-        />
+            }
+            subheader={
+              <Rating
+                name="rate"
+                emptyIcon={
+                  <StarRateIcon sx={{ color: "#4a4943" }} fontSize="inherit" />
+                }
+                value={ratings}
+                precision={0.5}
+                readOnly
+              />
+            }
+          />
+        )}
 
         <CardActionArea href={`products/${productId}`}>
           <CardMedia
