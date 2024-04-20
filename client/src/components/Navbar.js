@@ -8,13 +8,12 @@ import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { COLORS, PAGE_NAMES, PAGE_ROUTES } from "../constants/enums";
+import Avatar from "@mui/material/Avatar";
 
 const settings = PAGE_NAMES;
 
-function Navbar({ onLogout, isLoggedIn }) {
+function Navbar({ onLogout, isLoggedIn, user }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -99,59 +98,62 @@ function Navbar({ onLogout, isLoggedIn }) {
             </Typography>
           )}
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <SettingsIcon color="accent" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting.NAME} onClick={handleCloseUserMenu}>
-                  <Typography
-                    component="a"
-                    href={setting.ROUTE}
-                    textAlign="center"
-                    color="primary"
-                    sx={{
-                      textDecoration: "none",
-                    }}
-                  >
-                    {setting.NAME}
-                  </Typography>
-                </MenuItem>
-              ))}
-              <MenuItem onClick={handleLogout}>
-                <Typography
-                  textAlign="center"
-                  color="primary"
+          {isLoggedIn && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Tooltip title="Open user menu">
+                <IconButton
+                  onClick={handleOpenUserMenu}
                   sx={{
-                    textDecoration: "none",
+                    padding: "6px",
+                    borderRadius: "50%",
                   }}
                 >
-                  Logout
-                </Typography>
-              </MenuItem>
-            </Menu>
-          </Box>
+                  {/* Use UserAvatar component to display user avatar */}
+                  {user && user.user_profile_picture && (
+        <Avatar src={user.user_profile_picture} aria-label="Profile Pic" />
+      )}
+                </IconButton>
+              </Tooltip>
+
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting.NAME} onClick={handleCloseUserMenu}>
+                    <Typography
+                      component="a"
+                      href={setting.ROUTE}
+                      textAlign="center"
+                      color="primary"
+                      sx={{
+                        textDecoration: "none",
+                      }}
+                    >
+                      {setting.NAME}
+                    </Typography>
+                  </MenuItem>
+                ))}
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
+
 export default Navbar;

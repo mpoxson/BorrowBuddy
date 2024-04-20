@@ -45,12 +45,18 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const redirectTo = null; //NOTE: INITIALIZE SHOULD BE NULL
   const [disableLoginButton, setDisableLoginButton] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     // Check if user is already authenticated in localStorage
     const storedIsAuthenticated = localStorage.getItem("isAuthenticated");
     if (storedIsAuthenticated) {
       setIsAuthenticated(JSON.parse(storedIsAuthenticated));
+    }
+
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, []); // Only run once on component mount
 
@@ -64,6 +70,7 @@ export default function App() {
     setIsAuthenticated(false);
     localStorage.removeItem("isAuthenticated"); //false when logout
     setDisableLoginButton(false); // Enable login button after logout
+    setUser(null);
     return <img src={butterflyGif} alt="Beautiful Butterfly" />;
   };
 
@@ -82,6 +89,7 @@ export default function App() {
             onLogout={handleLogout}
             isLoggedIn={isAuthenticated}
             disableLoginButton={disableLoginButton}
+            user={user}
           />
           <Router>
             <header className="App-header">
