@@ -245,7 +245,7 @@ function AddProduct(props) {
               multiple
               required={true}
             />
-        </div>
+        
         <br></br>
         <br></br>
         <Button className="mt-5 rounded-lg bg-blue-500 text-white px-5 py-2 hover:bg-blue-600">Submit</Button>

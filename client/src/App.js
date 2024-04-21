@@ -26,6 +26,7 @@ import Conversations from "./components/Conversations";
 import Messages from "./components/Messages";
 import AddProduct from "./components/AddProduct";
 import UserDetails from "./components/UserDetails";
+import NoMatch from "./components/NoMatch";
 
 const theme = createTheme({
   palette: {
@@ -124,12 +125,8 @@ export default function App() {
                   <Route path="/imageTest" element={<ImageTest />} />
                   <Route path="/Product" element={<Product />} />
                   <Route path="/Conversations" element={<Conversations />} />
-                  <Route
-                    path="/Messages/:conversationID"
-                    element={<Messages />}
-                  />
-                  <Route path="/AddProduct" element={<AddProduct />} />
-                  <Route path="/users/:userId" element={<UserDetails />}  />
+                  <Route path="/Messages/:conversationID" element={<Messages />} />
+                  <Route path="*" element={<NoMatch />} />
                 </Route>
               </Routes>
             </header>
