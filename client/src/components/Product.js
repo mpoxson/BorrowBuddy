@@ -48,7 +48,7 @@ const Product = () => {
 
   const [openEdit, setEditOpen] = React.useState(false);
   const handleOpenEdit = () => setEditOpen(true);
-  const handleCloseEdit = () => setEditOpen(false);
+  const handleCloseEdit = () => {setEditOpen(false); window.location.reload();}
 
   //For page displaying images
   const [imageList, setImageList] = useState([]);
