@@ -150,6 +150,8 @@ const Edit = (props) => {
       //set is rented before making product rental
       await axios.put(`http://localhost:3001/products/${productId}`, updates);
       // window.location.reload();
+      alert("Changes uploaded.")
+      window.location.reload();
     } catch (error) {
       // Error handling code remains the same
       console.log("errored out: " + error);
