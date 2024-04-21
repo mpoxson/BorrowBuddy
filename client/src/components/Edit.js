@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -15,6 +15,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import axios from "axios";
 import dayjs from "dayjs";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import EditPictures from "./EditPictures";
+import { storage } from "../firebase/config";
+import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
+import { v4 } from 'uuid';
 
 const Edit = (props) => {
   const style = {
@@ -37,6 +41,95 @@ const Edit = (props) => {
   const [category, setCategory] = useState(props.props.product_category);
   const [start, setStart] = useState(props.props.product_available_start_time);
   const [end, setEnd] = useState(props.props.product_available_end_time);
+  //For page displaying images
+  const [imageList, setImageList] = useState([]);
+  const [imagesUpload, setImagesUpload] = useState([]);
+  const [urlImages, setUrlImages] = useState([]);
+  const [sentinal, setSetinal] = useState(0);
+  const [highestImage, setHighestImage] = useState([]);
+
+
+  //Create an array of image URLs from the product_images associated with product
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/product_images/${props.props.product_id}`)
+      .then((response) => {
+        response.data.forEach((product_images) =>
+          setImageList((prev) => [
+            ...new Set([...prev, product_images.image_location]),
+          ])
+        );
+      })
+      .catch((error) => {
+        console.error("Error fetching images:", error);
+      });
+  }, [props.props.product_id]);
+  
+  //Highest image order
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/product_images/max/${props.props.product_id}`)
+      .then((response) => {
+        if (response.data !== "" && response.data.constructor === Object) {
+          setHighestImage(response.data);
+        } else {
+          let temp = { image_order: 10 };
+          setHighestImage(temp);
+        }
+      });
+  }, [props.props.product_id]);
+
+  //For Upload button
+  const inpPic = useRef(null);
+  const selectImage = event => {
+    inpPic.current.click();
+  }
+
+  const handleChange = (e) => {
+    for (let i = 0; i < e.target.files.length; i++) {
+      const newImage = e.target.files[i];
+      const ilUrl = URL.createObjectURL(newImage);
+      setImageList((prev) => [
+        ...new Set([...prev, ilUrl]),
+      ]);
+      newImage["id"] = i;
+      setImagesUpload((prevState) => [...prevState, newImage]);  
+    }
+  };
+
+  const uploadImage = () => {
+  if (imagesUpload.length > 0) {
+    imagesUpload.map((image) =>{
+    //Create reference for where to store image
+    const imageRef = ref(storage, `products/${props.props.product_id}/${image.id + v4()}.png`);
+    uploadBytes(imageRef, image).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((urls) => {
+        setUrlImages((prevState) => [...prevState, urls]);
+        handleImages(urls);
+      });
+    });
+    });
+  }};
+
+  const handleImages = async (urls) => {
+    try {
+      const imageData = {
+        product_id: props.props.product_id,
+        image_order: highestImage.image_order,
+        image_location: urls,
+      }
+      await axios
+      .post(`http://localhost:3001/product_images`, imageData)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });;
+    } catch (error) {
+      console.log("errored out: " + error);
+    }
+  };
 
   console.log(props);
   const handleEdits = async () => {
@@ -56,12 +149,20 @@ const Edit = (props) => {
       //Check if is rented is still no first
       //set is rented before making product rental
       await axios.put(`http://localhost:3001/products/${productId}`, updates);
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       // Error handling code remains the same
       console.log("errored out: " + error);
     }
   };
+
+  const wrapperHandle = async () => {
+    uploadImage();
+    handleEdits();
+    // await Promise.all([uploadImage(), handleEdits()]);
+    // window.location.reload();
+  };
+
 
   return (
     <Box sx={style}>
@@ -95,6 +196,13 @@ const Edit = (props) => {
               setNewPrice(event.target.value);
             }}
           />
+          <EditPictures props={imageList} />
+          <input type="file" ref={inpPic} onChange={handleChange} multiple style={{display: 'none'}}/>
+          <Box display={"flex"} justifyContent={"right"} marginTop={"4px"}>
+          <Button variant="contained" onClick={selectImage}>
+            Upload
+          </Button>
+        </Box>
           <TextField
             variant="filled"
             sx={{ marginY: "7px" }}
@@ -137,7 +245,7 @@ const Edit = (props) => {
           </LocalizationProvider>
         </Box>
         <Box display={"flex"} justifyContent={"right"} marginTop={"4px"}>
-          <Button variant="contained" onClick={handleEdits}>
+          <Button variant="contained" onClick={wrapperHandle}>
             Change
           </Button>
         </Box>

@@ -49,6 +49,26 @@ router.get('/min/:productId', async (req, res) => {
     }
 });
 
+//Associated with product ID, where image_order value is highest...
+router.get('/max/:productId', async (req, res) => {
+  const product_id = req.params.productId;
+
+  try {
+      const imagesByProduct = await product_images.findOne({
+          where: {
+              product_id: product_id
+          },
+          order: [
+              ['image_order', 'DESC'],
+          ]
+      });
+      res.json(imagesByProduct);
+  } catch (error) {
+      console.error('Error fetching product images:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 router.post("/", async (req,res)=>{
     const product_image=req.body;
     await product_images.create(product_image);
