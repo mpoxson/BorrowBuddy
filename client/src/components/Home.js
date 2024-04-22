@@ -95,7 +95,7 @@ const Home = () => {
 
     // Apply search filter if searchQuery is not empty
     if (searchQuery) {
-      const searchRegex = new RegExp(searchQuery.trim(), "i");
+      let searchRegex = new RegExp(searchQuery.trim(), "i");
       filtered = filtered.filter((item) => searchRegex.test(item.product_name));
     }
 
@@ -107,8 +107,11 @@ const Home = () => {
       filtered = filtered.filter((item) => item.rental);
     }
     if (categoryFilter) {
+      let searchRegex = new RegExp(categoryFilter.trim(), "i");
+      // searchRegex.test(item.product_category)
       filtered = filtered.filter(
-        (item) => item.product_category === categoryFilter
+        // (item) => item.product_category === categoryFilter
+        (item) => searchRegex.test(item.product_category)
       );
     }
     if (priceFilter) {
