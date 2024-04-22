@@ -164,6 +164,7 @@ export default function App() {
               </div>
             )}
 
+          <Box height={"10px"} width={"100%"}></Box>
           <Footers />
         </Box>
       </ThemeProvider>

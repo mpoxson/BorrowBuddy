@@ -218,7 +218,6 @@ const Product = () => {
         paddingTop: "10px",
         display: "block",
         justifyContent: "center",
-        backgroundColor: COLORS.SECONDARY,
         paddingBottom: "10px",
       }}
     >
