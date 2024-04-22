@@ -60,7 +60,7 @@ const Ratings = (props) => {
 
   return (
     <Paper
-      elevation={1}
+      elevation={3}
       sx={{
         width: "97%",
         marginX: "auto",
