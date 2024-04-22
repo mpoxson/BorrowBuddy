@@ -97,6 +97,9 @@ const TestUsersList = () => {
       );
       if (response.status === 200) {
         console.log("Profile picture updated successfully");
+        let curr_user = JSON.parse(localStorage.getItem("user"));
+        curr_user["user_profile_picture"] = editableFields.user_profile_picture;
+        localStorage.setItem("user", JSON.stringify(curr_user));
       } else {
         console.error("Failed to update profile picture");
       }

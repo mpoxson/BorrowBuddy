@@ -123,9 +123,13 @@ export default function App() {
                   <Route path="/Feedback" element={<Feedback />} />
                   <Route path="/products/:productId" element={<Product />} />
                   <Route path="/imageTest" element={<ImageTest />} />
-                  <Route path="/Product" element={<Product />} />
+                  <Route path="/AddProduct" element={<AddProduct />} />
                   <Route path="/Conversations" element={<Conversations />} />
-                  <Route path="/Messages/:conversationID" element={<Messages />} />
+                  <Route
+                    path="/Messages/:conversationID"
+                    element={<Messages />}
+                  />
+                  <Route path="/users/:userId" element={<UserDetails />} />
                   <Route path="*" element={<NoMatch />} />
                 </Route>
               </Routes>
