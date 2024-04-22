@@ -51,17 +51,13 @@ function Card(props) {
     axios
       .get(`http://localhost:3001/product_images/min/${props.props.product_id}`)
       .then((response) => {
-        if (response.data !== "" && response.data.constructor === Object) {
+        console.log(response.data);
+        // if (response.data !== "" && response.data.constructor === Object) {
+        if (response.data !== null) {
           setImageSingle(response.data);
         } else {
           let temp = { image_location: testImage };
           setImageSingle(temp);
-          console.log(
-            "asdfkjgaskljglkgjsagjkl" +
-              imageSingle +
-              " " +
-              imageSingle.image_location
-          );
         }
       });
 
@@ -143,7 +139,7 @@ function Card(props) {
     >
       <MCard
         sx={{
-          height: "450px",
+          height: "500px",
           width: "100%",
           maxWidth: 300,
           backgroundColor: COLORS.SECONDARY,
@@ -254,10 +250,28 @@ function Card(props) {
             alt={props.props.product_name}
           />
           <CardContent sx={{ color: COLORS.PRIMARY }}>
-            <Typography gutterBottom variant="h5" component="div">
-              {props.props.product_name} • {props.props.product_price}/day
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              height={"27px"}
+              overflow={"hidden"}
+            >
+              {props.props.product_name}
             </Typography>
-            <Typography variant="body2" sx={{ color: COLORS.PRIMARY }}>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              color={COLORS.ACCENT}
+            >
+              {props.props.product_price}/day
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ color: COLORS.PRIMARY }}
+              height={"40px"}
+            >
               {props.props.product_description}
             </Typography>
             <Typography
